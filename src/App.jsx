@@ -527,10 +527,10 @@ export default function DesdeDroneApp() {
             </div>
             
             <h1 className="text-4xl lg:text-7xl font-bold leading-none tracking-tight mb-6" style={{ color: "white" }}>
-              Capturamos{" "}
-              <span style={{ color: "#00e676" }}>tu terreno</span>
+              Visión aerea{" "}
+              <span style={{ color: "#00e676" }}>para deciciones</span>
               <br />
-              desde el cielo
+              estratégicas
             </h1>
             
             <p className="text-base lg:text-lg max-w-xl mb-10 leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>
