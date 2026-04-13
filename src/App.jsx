@@ -257,6 +257,203 @@ function Login({ onLogin, onBack }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+// STACK TECNOLÓGICO PAGE
+// ═══════════════════════════════════════════════════════════════════════
+function StackPage({ onBack }) {
+  const [activeTab, setActiveTab] = useState("current");
+
+  const currentStack = [
+    { name: "React 18", role: "Framework de UI", desc: "Biblioteca declarativa para interfaces de usuario. Componentes funcionales con Hooks para manejo de estado y ciclo de vida.", cat: "Frontend", status: "Producción" },
+    { name: "Vite 6", role: "Bundler & Dev Server", desc: "Build tool de última generación. Hot Module Replacement instantáneo, ESBuild para transpilación y Rollup para producción.", cat: "Tooling", status: "Producción" },
+    { name: "Tailwind CSS 4", role: "Framework de estilos", desc: "Utility-first CSS framework. Diseño responsive, tema custom con paleta dorada (#c4a478) y sistema de dark mode.", cat: "Frontend", status: "Producción" },
+    { name: "Vercel", role: "Hosting & Deploy", desc: "Plataforma de deploy con CDN global, SSL automático y preview deployments. CI/CD conectado a GitHub.", cat: "Infraestructura", status: "Producción" },
+    { name: "GitHub", role: "Repositorio & Versionado", desc: "Control de versiones con Git. Organización: desdedrone-ar. Branch principal: main.", cat: "Tooling", status: "Producción" },
+  ];
+
+  const plannedStack = [
+    { name: "Supabase", role: "Backend as a Service", desc: "Autenticación con email/password y OAuth, base de datos PostgreSQL con Row Level Security, y storage para archivos de proyecto.", cat: "Backend", status: "Próxima fase", priority: "Alta" },
+    { name: "PostgreSQL + PostGIS", role: "Base de datos geoespacial", desc: "Motor relacional con extensión geoespacial para queries por ubicación, almacenamiento de metadatos de vuelo y gestión de proyectos.", cat: "Backend", status: "Próxima fase", priority: "Alta" },
+    { name: "Cloudflare R2", role: "Object Storage", desc: "Almacenamiento de archivos pesados: ortomosaicos (GeoTIFF), nubes de puntos (LAS/LAZ), videos 4K. Sin egress fees.", cat: "Infraestructura", status: "Próxima fase", priority: "Alta" },
+    { name: "Leaflet / MapLibre", role: "Visor de mapas real", desc: "Reemplazo del canvas simulado por visor geoespacial real. Soporte para capas GeoTIFF, medición de distancias y áreas, y exportación.", cat: "Frontend", status: "Próxima fase", priority: "Alta" },
+    { name: "Video.js", role: "Player de video", desc: "Reproductor con streaming adaptativo (HLS), soporte de subtítulos, thumbnails y API para observaciones con timestamp.", cat: "Frontend", status: "Fase 2", priority: "Media" },
+    { name: "FFmpeg (server-side)", role: "Procesamiento de video", desc: "Generación automática de marca de agua en muestras, transcodificación a HLS para streaming, y extracción de thumbnails.", cat: "Backend", status: "Fase 2", priority: "Media" },
+    { name: "AFIP API", role: "Facturación electrónica", desc: "Integración con web services de AFIP para emisión de facturas electrónicas tipo A, B y C. CUIT, CAE y validación fiscal.", cat: "Integración", status: "Fase 3", priority: "Baja" },
+    { name: "Potree / 3D Tiles", role: "Visor de nube de puntos 3D", desc: "Renderizado WebGL de nubes de puntos densas. Navegación 3D, secciones de corte y clasificación de puntos.", cat: "Frontend", status: "Fase 3", priority: "Baja" },
+  ];
+
+  const cats = ["Frontend", "Backend", "Infraestructura", "Tooling", "Integración"];
+  const catColors = { Frontend: "#c4a478", Backend: "#8fb4c4", Infraestructura: "#b89878", Tooling: "#a0a0a0", Integración: "#d4a053" };
+  const prioColors = { Alta: "#c4a478", Media: "#8fb4c4", Baja: "rgba(255,255,255,0.3)" };
+
+  const data = activeTab === "current" ? currentStack : plannedStack;
+
+  return (
+    <div className="min-h-screen" style={{ background: "#0a0c10" }}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+      <style>{`.dd-body{font-family:'DM Sans',sans-serif}.dd-mono{font-family:'IBM Plex Mono',monospace}`}</style>
+
+      <div className="dd-body">
+        {/* Nav */}
+        <nav className="flex items-center justify-between px-6 lg:px-12 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl" style={{ color: "#c4a478" }}>◈</span>
+            <span className="text-sm font-semibold tracking-wider" style={{ color: "white" }}>DESDEDRONE<span style={{ color: "#c4a478" }}>.AR</span></span>
+          </div>
+          <button onClick={onBack} className="flex items-center gap-2 text-xs tracking-wider" style={{ color: "rgba(255,255,255,0.35)" }}
+            onMouseEnter={e => e.target.style.color = "#c4a478"} onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.35)"}>
+            ← Volver al inicio
+          </button>
+        </nav>
+
+        <div className="max-w-5xl mx-auto px-6 lg:px-12 py-20">
+          {/* Header */}
+          <div className="mb-16">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-px w-12" style={{ background: "rgba(196,164,120,0.3)" }} />
+              <span className="dd-mono text-xs tracking-widest" style={{ color: "rgba(196,164,120,0.5)" }}>ARQUITECTURA DEL SISTEMA</span>
+            </div>
+            <h1 className="text-3xl lg:text-5xl font-light mb-3" style={{ color: "white" }}>
+              Stack <span className="font-semibold" style={{ color: "#c4a478" }}>Tecnológico</span>
+            </h1>
+            <p className="text-sm leading-relaxed max-w-xl" style={{ color: "rgba(255,255,255,0.35)" }}>
+              Tecnologías actuales en producción y roadmap de integración planificado para escalar la plataforma DesdeDrone.
+            </p>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex items-center gap-1 mb-12 p-1 rounded-xl inline-flex" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+            {[
+              { id: "current", label: "Stack Actual", count: currentStack.length },
+              { id: "planned", label: "Roadmap", count: plannedStack.length },
+            ].map(tab => (
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-medium tracking-wide transition-all"
+                style={{
+                  background: activeTab === tab.id ? "rgba(196,164,120,0.1)" : "transparent",
+                  color: activeTab === tab.id ? "#c4a478" : "rgba(255,255,255,0.35)",
+                }}>
+                {tab.label}
+                <span className="dd-mono text-xs px-1.5 py-0.5 rounded" style={{
+                  background: activeTab === tab.id ? "rgba(196,164,120,0.1)" : "rgba(255,255,255,0.03)",
+                  color: activeTab === tab.id ? "#c4a478" : "rgba(255,255,255,0.2)",
+                }}>{tab.count}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Architecture diagram mini */}
+          {activeTab === "current" && (
+            <div className="mb-12 p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.04)" }}>
+              <div className="dd-mono text-xs tracking-widest mb-5" style={{ color: "rgba(196,164,120,0.4)" }}>DIAGRAMA SIMPLIFICADO</div>
+              <div className="flex items-center justify-center gap-3 flex-wrap">
+                {["React + Vite", "→", "Tailwind CSS", "→", "Build", "→", "Vercel CDN", "→", "Cliente"].map((item, i) => (
+                  item === "→" ? (
+                    <span key={i} className="text-lg" style={{ color: "rgba(196,164,120,0.15)" }}>→</span>
+                  ) : (
+                    <div key={i} className="px-4 py-2.5 rounded-xl text-xs font-medium dd-mono" style={{
+                      background: "rgba(196,164,120,0.04)",
+                      border: "1px solid rgba(196,164,120,0.08)",
+                      color: "rgba(255,255,255,0.5)",
+                    }}>{item}</div>
+                  )
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "planned" && (
+            <div className="mb-12 p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.04)" }}>
+              <div className="dd-mono text-xs tracking-widest mb-5" style={{ color: "rgba(196,164,120,0.4)" }}>ARQUITECTURA OBJETIVO</div>
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                {[
+                  { items: ["Cliente (React)"], color: "#c4a478" },
+                  { items: ["→"] },
+                  { items: ["Vercel Edge"], color: "#b89878" },
+                  { items: ["→"] },
+                  { items: ["Supabase Auth", "Supabase DB", "Supabase Storage"], color: "#8fb4c4" },
+                  { items: ["→"] },
+                  { items: ["Cloudflare R2", "FFmpeg Worker"], color: "#b89878" },
+                ].map((group, gi) => (
+                  <div key={gi} className="flex flex-col items-center gap-1.5">
+                    {group.items.map((item, ii) => (
+                      item === "→" ? (
+                        <span key={ii} className="text-lg" style={{ color: "rgba(196,164,120,0.15)" }}>→</span>
+                      ) : (
+                        <div key={ii} className="px-3 py-2 rounded-lg text-xs dd-mono" style={{
+                          background: `${group.color || "#c4a478"}08`,
+                          border: `1px solid ${group.color || "#c4a478"}15`,
+                          color: "rgba(255,255,255,0.45)",
+                        }}>{item}</div>
+                      )
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Category legend */}
+          <div className="flex flex-wrap gap-4 mb-8">
+            {cats.filter(c => data.some(d => d.cat === c)).map(c => (
+              <div key={c} className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full" style={{ background: catColors[c] }} />
+                <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{c}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Tech cards */}
+          <div className="space-y-3">
+            {data.map((tech, i) => (
+              <div key={i} className="group p-6 rounded-2xl transition-all" style={{
+                background: "rgba(255,255,255,0.01)",
+                border: "1px solid rgba(255,255,255,0.04)",
+              }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(196,164,120,0.1)"}
+                onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"}
+              >
+                <div className="flex flex-col lg:flex-row lg:items-start gap-4">
+                  <div className="lg:w-56 flex-shrink-0">
+                    <div className="flex items-center gap-3 mb-1">
+                      <div className="w-2 h-2 rounded-full" style={{ background: catColors[tech.cat] }} />
+                      <h3 className="text-base font-semibold" style={{ color: "white" }}>{tech.name}</h3>
+                    </div>
+                    <span className="dd-mono text-xs" style={{ color: catColors[tech.cat] }}>{tech.role}</span>
+                  </div>
+                  <p className="flex-1 text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>{tech.desc}</p>
+                  <div className="flex items-center gap-2 lg:flex-shrink-0">
+                    {tech.priority && (
+                      <span className="dd-mono text-xs px-2.5 py-1 rounded-lg" style={{
+                        background: `${prioColors[tech.priority]}08`,
+                        border: `1px solid ${prioColors[tech.priority]}15`,
+                        color: prioColors[tech.priority],
+                      }}>Prioridad {tech.priority}</span>
+                    )}
+                    <span className="dd-mono text-xs px-2.5 py-1 rounded-lg" style={{
+                      background: tech.status === "Producción" ? "rgba(196,164,120,0.06)" : "rgba(255,255,255,0.02)",
+                      border: tech.status === "Producción" ? "1px solid rgba(196,164,120,0.12)" : "1px solid rgba(255,255,255,0.04)",
+                      color: tech.status === "Producción" ? "#c4a478" : "rgba(255,255,255,0.3)",
+                    }}>{tech.status}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Summary */}
+          <div className="mt-16 p-8 rounded-2xl text-center" style={{ background: "rgba(196,164,120,0.02)", border: "1px solid rgba(196,164,120,0.06)" }}>
+            <h3 className="text-lg font-semibold mb-2" style={{ color: "white" }}>Criterio de selección</h3>
+            <p className="text-sm leading-relaxed max-w-lg mx-auto" style={{ color: "rgba(255,255,255,0.35)" }}>
+              Cada tecnología fue elegida priorizando confiabilidad, costo operativo bajo, ecosistema open source y compatibilidad con datos geoespaciales. El stack está diseñado para escalar de MVP a plataforma multi-tenant sin reescrituras.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // LANDING — PREMIUM / ARCHITECTURAL
 // ═══════════════════════════════════════════════════════════════════════
 function Landing({ onNavigate }) {
@@ -300,7 +497,7 @@ function Landing({ onNavigate }) {
               <span className="text-sm font-semibold tracking-wider" style={{color:"white"}}>DESDEDRONE<span style={{color:"#c4a478"}}>.AR</span></span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              {["Servicios","Plataforma","Proceso","Contacto"].map(t=><a key={t} href="#" className="text-xs tracking-wider transition-colors" style={{color:"rgba(255,255,255,0.35)"}} onMouseEnter={e=>e.target.style.color="#c4a478"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.35)"}>{t}</a>)}
+              {[{t:"Servicios",v:null},{t:"Plataforma",v:"stack"},{t:"Proceso",v:null},{t:"Contacto",v:null}].map(item=><a key={item.t} href="#" onClick={e=>{e.preventDefault();if(item.v)onNavigate(item.v);}} className="text-xs tracking-wider transition-colors" style={{color:"rgba(255,255,255,0.35)"}} onMouseEnter={e=>e.target.style.color="#c4a478"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.35)"}>{item.t}</a>)}
             </div>
             <button onClick={()=>onNavigate("login")} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium tracking-wider transition-all dd-glow" style={{border:"1px solid rgba(196,164,120,0.25)",color:"#c4a478"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(196,164,120,0.06)"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Portal Clientes</button>
           </div>
@@ -323,7 +520,7 @@ function Landing({ onNavigate }) {
                 Visión aérea para
               </h1>
               <h1 className="dd-fade-up dd-fade-up-d2 text-4xl lg:text-7xl font-semibold leading-tight tracking-tight mb-10" style={{color:"#c4a478"}}>
-                decisiones estrategicas
+                decisiones estratégicas
               </h1>
 
               <div className="dd-fade-up dd-fade-up-d3">
@@ -527,6 +724,7 @@ export default function App() {
 
   if (view === "landing") return <Landing onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}}/>;
   if (view === "login") return <Login onLogin={()=>setView("dashboard")} onBack={()=>setView("landing")}/>;
+  if (view === "stack") return <StackPage onBack={()=>setView("landing")}/>;;
 
   // Dashboard shell
   const accent = "#c4a478";
