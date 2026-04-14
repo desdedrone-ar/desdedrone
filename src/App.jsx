@@ -39,6 +39,10 @@ const Ic = {
   Ruler:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><path d="M21.9 7.1L16.9 2.1a1 1 0 00-1.4 0l-14 14a1 1 0 000 1.4l5 5a1 1 0 001.4 0l14-14a1 1 0 000-1.4z"/><path d="M14.5 5.5l1 1M11.5 8.5l1 1M8.5 11.5l1 1M5.5 14.5l1 1"/></svg>,
   Building:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22V12h6v10M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01"/></svg>,
   Camera:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+  Calculator:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><rect x="4" y="2" width="16" height="20" rx="2"/><rect x="7" y="5" width="10" height="4"/><path d="M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01M16 17h.01"/></svg>,
+  Package:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v9"/></svg>,
+  Check:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M5 13l4 4L19 7"/></svg>,
+  File:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M10 13h4M10 17h6"/></svg>,
 };
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -856,6 +860,470 @@ function CasosDeUsoPage({ onBack, onContacto }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+// PRESUPUESTO PAGE — Módulo comercial para Constructoras
+// ═══════════════════════════════════════════════════════════════════════
+function PresupuestoPage({ onBack, onContacto }) {
+  const [superficie, setSuperficie] = useState(5000);
+  const [frecuencia, setFrecuencia] = useState("quincenal");
+  const [meses, setMeses] = useState(6);
+  const [extras, setExtras] = useState({ video: true, informe: true, comparativa: true, gcps: false, marketing: false });
+  const [paqueteActivo, setPaqueteActivo] = useState("estandar");
+
+  const fmt = n => new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(n);
+
+  // Cálculo de precios (ARS, valores estimados Marzo 2026)
+  const baseVuelo = 85000;
+  const precioM2 = superficie <= 3000 ? 28 : superficie <= 10000 ? 22 : 16;
+  const vueloUnit = Math.round(baseVuelo + superficie * precioM2);
+  const vuelosPorMes = frecuencia === "mensual" ? 1 : frecuencia === "quincenal" ? 2 : 4;
+  const costoVuelos = vueloUnit * vuelosPorMes;
+  const extraCosto = (extras.video ? 120000 : 0) + (extras.informe ? 40000 : 0) + (extras.comparativa ? 60000 : 0) + (extras.gcps ? 80000 : 0) + (extras.marketing ? 100000 : 0);
+  const costoMensual = costoVuelos + extraCosto;
+  const descuentoMeses = meses >= 12 ? 0.15 : meses >= 6 ? 0.08 : 0;
+  const totalMensual = Math.round(costoMensual * (1 - descuentoMeses));
+  const totalProyecto = totalMensual * meses;
+
+  const paquetes = [
+    {
+      id: "basico", nombre: "Seguimiento Básico", sub: "Obra hasta 3.000 m²",
+      frec: "Vuelo mensual", vuelos: 1, precio: 240000,
+      color: "#8fb4c4",
+      incluye: [
+        "1 vuelo mensual de fotogrametría",
+        "Ortomosaico GeoTIFF de obra",
+        "Video aéreo 4K editado (60 seg)",
+        "Reporte PDF de avance para inversores",
+        "Galería web con acceso compartido",
+        "Archivo en la nube por 12 meses",
+      ],
+      excluye: ["Informe técnico detallado", "Comparativa multi-vuelo", "Puntos de control GPS (GCPs)"],
+      ideal: "Desarrolladores con 1-2 obras pequeñas. Ideal para salas de venta y reportes a inversores.",
+    },
+    {
+      id: "estandar", nombre: "Seguimiento Estándar", sub: "Obra hasta 10.000 m²", destacado: true,
+      frec: "Vuelo quincenal", vuelos: 2, precio: 450000,
+      color: "#c4a478",
+      incluye: [
+        "2 vuelos mensuales de fotogrametría",
+        "Ortomosaico GeoTIFF + MDS por etapa",
+        "Video aéreo 4K editado (90-120 seg)",
+        "Comparativa temporal superpuesta",
+        "Informe técnico de avance",
+        "Nube de puntos LAS descargable",
+        "Portal cliente con visor geoespacial",
+        "Observaciones timestamped sobre video",
+      ],
+      excluye: ["GCPs topográficos de precisión"],
+      ideal: "Obras en ejecución con cronograma activo. Balance óptimo entre costo y calidad de documentación.",
+    },
+    {
+      id: "premium", nombre: "Seguimiento Premium", sub: "Obra > 10.000 m² o múltiples frentes",
+      frec: "Vuelo semanal + extras", vuelos: 4, precio: 890000,
+      color: "#d4a053",
+      incluye: [
+        "4 vuelos mensuales de fotogrametría",
+        "Ortomosaico + MDS + MDT por vuelo",
+        "Video 4K + versión redes sociales",
+        "Comparativa multi-vuelo todas las etapas",
+        "Cálculo de volúmenes y movimientos",
+        "Puntos de control GPS (GCPs) calibrados",
+        "Informe técnico mensual con evidencia",
+        "Reunión mensual de revisión on-site",
+        "Archivo histórico ilimitado",
+        "Respuesta 24hs para re-vuelos",
+      ],
+      excluye: [],
+      ideal: "Obras grandes o complejos con varios frentes. Para constructoras que priorizan control total y trazabilidad.",
+    },
+  ];
+
+  const entregables = [
+    {
+      id: "ortomosaico", nombre: "Ortomosaico GeoTIFF", tag: "Cartografía georeferenciada",
+      desc: "Imagen aérea corregida geométricamente. Permite mediciones reales de distancias, áreas y perímetros con precisión centimétrica.",
+      specs: [["Resolución", "1-3 cm/pixel"], ["Formato", "GeoTIFF + KMZ"], ["Sistema", "WGS84 / POSGAR 2007"], ["Tamaño típico", "200-800 MB"]],
+      uso: "Control de avance, replanteo, documentación fechada de obra",
+      icon: <Ic.Map />, color: "#c4a478",
+    },
+    {
+      id: "video", nombre: "Video Aéreo 4K editado", tag: "Producción audiovisual",
+      desc: "Material editado con color grading profesional. Múltiples formatos: master 4K, cortes para redes, versión con marca de agua para pre-lanzamiento.",
+      specs: [["Resolución", "4K @ 30/60fps"], ["Duración", "60-180 seg"], ["Formatos", "MP4, MOV, H.265"], ["Entrega", "Master + redes"]],
+      uso: "Sala de ventas, redes sociales, reportes a inversores",
+      icon: <Ic.Video />, color: "#8fb4c4",
+    },
+    {
+      id: "mds", nombre: "Modelo Digital de Superficie", tag: "MDS · MDT · Curvas",
+      desc: "Representación 3D del terreno y las estructuras. Permite generar perfiles, curvas de nivel y calcular volúmenes excavados o rellenados.",
+      specs: [["Resolución", "5-10 cm"], ["Formato", "GeoTIFF · LAS 1.4"], ["Equidistancia", "0.25 / 0.5 / 1 m"], ["Precisión", "±3 cm con GCPs"]],
+      uso: "Movimiento de suelos, topografía, certificaciones",
+      icon: <Ic.Layers />, color: "#b89878",
+    },
+    {
+      id: "comparativa", nombre: "Comparativa Temporal", tag: "Análisis multi-vuelo",
+      desc: "Superposición de vuelos entre etapas. Visualización lado a lado o blend animado para identificar avances, atrasos y desvíos del cronograma.",
+      specs: [["Mínimo 2 vuelos", "Georeferenciados"], ["Output", "Video + web interactivo"], ["Periodicidad", "Por etapa"], ["Exportación", "PDF + MP4"]],
+      uso: "Control de cronograma, reuniones de obra, arbitrajes",
+      icon: <Ic.Grid />, color: "#a0b890",
+    },
+    {
+      id: "informe", nombre: "Informe técnico PDF", tag: "Documentación profesional",
+      desc: "Reporte estructurado con evidencia fotográfica, mediciones, cuantificaciones y observaciones técnicas. Listo para presentar a dirección de obra.",
+      specs: [["Formato", "PDF A4 · 15-30 pág"], ["Incluye", "Planos · Cotas · Fotos"], ["Frecuencia", "Por vuelo / mensual"], ["Firma", "Responsable técnico"]],
+      uso: "Auditorías, certificaciones, reportes a dirección",
+      icon: <Ic.File />, color: "#d4a053",
+    },
+    {
+      id: "portal", nombre: "Portal Cliente Web", tag: "Acceso multiusuario",
+      desc: "Plataforma privada con visor geoespacial, reproductor de video con observaciones y descarga de entregables. Login por usuario.",
+      specs: [["Usuarios", "Ilimitados"], ["Retención", "24 meses"], ["Visor", "Leaflet + MapLibre"], ["Export", "GeoJSON · PDF · PNG"]],
+      uso: "Consulta permanente, trabajo colaborativo con BIM/CAD",
+      icon: <Ic.Signal />, color: "#c4a478",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen" style={{ background: "#0a0c10" }}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+      <style>{`.dd-body{font-family:'DM Sans',sans-serif}.dd-mono{font-family:'IBM Plex Mono',monospace}`}</style>
+
+      <div className="dd-body">
+        {/* Nav */}
+        <nav className="flex items-center justify-between px-6 lg:px-12 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl" style={{ color: "#c4a478" }}>◈</span>
+            <span className="text-sm font-semibold tracking-wider" style={{ color: "white" }}>DESDEDRONE<span style={{ color: "#c4a478" }}>.AR</span></span>
+          </div>
+          <button onClick={onBack} className="flex items-center gap-2 text-xs tracking-wider" style={{ color: "rgba(255,255,255,0.35)" }}
+            onMouseEnter={e => e.target.style.color = "#c4a478"} onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.35)"}>
+            ← Volver al inicio
+          </button>
+        </nav>
+
+        <div className="max-w-6xl mx-auto px-6 lg:px-12 py-20">
+
+          {/* Header */}
+          <div className="mb-20">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-px w-12" style={{ background: "rgba(196,164,120,0.3)" }} />
+              <span className="dd-mono text-xs tracking-widest" style={{ color: "rgba(196,164,120,0.5)" }}>PRESUPUESTO · CONSTRUCTORAS</span>
+            </div>
+            <h1 className="text-3xl lg:text-5xl font-light mb-3" style={{ color: "white" }}>
+              Propuesta comercial para <span className="font-semibold" style={{ color: "#c4a478" }}>obra en ejecución</span>
+            </h1>
+            <p className="text-sm leading-relaxed max-w-2xl" style={{ color: "rgba(255,255,255,0.35)" }}>
+              Paquetes mensuales de seguimiento aéreo con frecuencia fija, entregables definidos y precio cerrado. Valores de referencia en pesos argentinos, ajustables por IPC trimestral.
+            </p>
+          </div>
+
+          {/* ═══ PAQUETES ═══ */}
+          <div className="mb-24">
+            <div className="flex items-center gap-4 mb-8">
+              <span className="dd-mono text-xs tracking-widest" style={{ color: "rgba(196,164,120,0.5)" }}>PAQUETES MENSUALES</span>
+              <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.04)" }} />
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-5">
+              {paquetes.map(p => (
+                <div key={p.id} onClick={() => setPaqueteActivo(p.id)} className="relative p-7 rounded-2xl cursor-pointer transition-all" style={{
+                  background: paqueteActivo === p.id ? `${p.color}06` : "rgba(255,255,255,0.01)",
+                  border: `1px solid ${paqueteActivo === p.id ? p.color + "30" : "rgba(255,255,255,0.04)"}`,
+                  transform: p.destacado ? "scale(1.02)" : "none",
+                }}>
+                  {p.destacado && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full dd-mono text-xs tracking-widest" style={{ background: "#c4a478", color: "#0a0c10" }}>
+                      MÁS ELEGIDO
+                    </div>
+                  )}
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-5" style={{ background: `${p.color}0a`, border: `1px solid ${p.color}20`, color: p.color }}>
+                    <Ic.Package />
+                  </div>
+                  <span className="dd-mono text-xs tracking-widest block mb-2" style={{ color: p.color }}>{p.frec.toUpperCase()}</span>
+                  <h3 className="text-xl font-semibold mb-1" style={{ color: "white" }}>{p.nombre}</h3>
+                  <p className="text-xs mb-5" style={{ color: "rgba(255,255,255,0.3)" }}>{p.sub}</p>
+
+                  <div className="mb-6 pb-6 border-b" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+                    <div className="flex items-baseline gap-2">
+                      <span className="dd-mono text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>$</span>
+                      <span className="text-3xl font-light" style={{ color: "white" }}>{fmt(p.precio)}</span>
+                      <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>/mes</span>
+                    </div>
+                    <span className="dd-mono text-xs mt-1 block" style={{ color: "rgba(255,255,255,0.2)" }}>ARS · sin IVA</span>
+                  </div>
+
+                  <ul className="space-y-2.5 mb-6">
+                    {p.incluye.map((it, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+                        <span style={{ color: p.color, marginTop: "2px" }}><Ic.Check /></span>
+                        <span>{it}</span>
+                      </li>
+                    ))}
+                    {p.excluye.map((it, i) => (
+                      <li key={`x${i}`} className="flex items-start gap-2.5 text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.18)", textDecoration: "line-through" }}>
+                        <span style={{ marginTop: "2px" }}>·</span>
+                        <span>{it}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.03)" }}>
+                    <span className="dd-mono text-xs tracking-widest block mb-2" style={{ color: "rgba(255,255,255,0.25)" }}>IDEAL PARA</span>
+                    <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.4)" }}>{p.ideal}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ═══ CALCULADORA ═══ */}
+          <div className="mb-24 p-8 lg:p-10 rounded-3xl" style={{ background: "rgba(196,164,120,0.02)", border: "1px solid rgba(196,164,120,0.08)" }}>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(196,164,120,0.08)", border: "1px solid rgba(196,164,120,0.15)", color: "#c4a478" }}>
+                <Ic.Calculator />
+              </div>
+              <div>
+                <span className="dd-mono text-xs tracking-widest block" style={{ color: "rgba(196,164,120,0.6)" }}>CALCULADORA INTERACTIVA</span>
+                <h2 className="text-xl font-semibold" style={{ color: "white" }}>Estimador de presupuesto a medida</h2>
+              </div>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-10">
+              {/* Controles */}
+              <div className="space-y-8">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="dd-mono text-xs tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>SUPERFICIE DE OBRA</label>
+                    <span className="dd-mono text-sm font-semibold" style={{ color: "#c4a478" }}>{fmt(superficie)} m²</span>
+                  </div>
+                  <input type="range" min="500" max="50000" step="500" value={superficie} onChange={e => setSuperficie(+e.target.value)}
+                    className="w-full" style={{ accentColor: "#c4a478" }} />
+                  <div className="flex justify-between mt-2 dd-mono text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
+                    <span>500 m²</span><span>50.000 m²</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="dd-mono text-xs tracking-widest block mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>FRECUENCIA DE VUELO</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: "mensual", label: "Mensual", desc: "1×/mes" },
+                      { id: "quincenal", label: "Quincenal", desc: "2×/mes" },
+                      { id: "semanal", label: "Semanal", desc: "4×/mes" },
+                    ].map(f => (
+                      <button key={f.id} onClick={() => setFrecuencia(f.id)} className="p-3 rounded-xl transition-all text-left" style={{
+                        background: frecuencia === f.id ? "rgba(196,164,120,0.08)" : "rgba(255,255,255,0.01)",
+                        border: `1px solid ${frecuencia === f.id ? "rgba(196,164,120,0.3)" : "rgba(255,255,255,0.04)"}`,
+                      }}>
+                        <span className="text-sm font-semibold block" style={{ color: frecuencia === f.id ? "#c4a478" : "white" }}>{f.label}</span>
+                        <span className="dd-mono text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{f.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="dd-mono text-xs tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>DURACIÓN DEL CONTRATO</label>
+                    <span className="dd-mono text-sm font-semibold" style={{ color: "#c4a478" }}>{meses} {meses === 1 ? "mes" : "meses"}</span>
+                  </div>
+                  <input type="range" min="1" max="24" step="1" value={meses} onChange={e => setMeses(+e.target.value)}
+                    className="w-full" style={{ accentColor: "#c4a478" }} />
+                  <div className="flex justify-between mt-2 dd-mono text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
+                    <span>1 mes</span><span>24 meses</span>
+                  </div>
+                  {descuentoMeses > 0 && (
+                    <p className="text-xs mt-2" style={{ color: "#a0b890" }}>
+                      ✓ Descuento por duración aplicado: –{(descuentoMeses * 100).toFixed(0)}%
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="dd-mono text-xs tracking-widest block mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>EXTRAS</label>
+                  <div className="space-y-2">
+                    {[
+                      { k: "video", label: "Video 4K editado", precio: 120000 },
+                      { k: "informe", label: "Informe técnico PDF", precio: 40000 },
+                      { k: "comparativa", label: "Comparativa temporal multi-vuelo", precio: 60000 },
+                      { k: "gcps", label: "Puntos de control GPS (GCPs)", precio: 80000 },
+                      { k: "marketing", label: "Material marketing (redes + sala venta)", precio: 100000 },
+                    ].map(e => (
+                      <label key={e.k} className="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all" style={{
+                        background: extras[e.k] ? "rgba(196,164,120,0.04)" : "rgba(255,255,255,0.01)",
+                        border: `1px solid ${extras[e.k] ? "rgba(196,164,120,0.2)" : "rgba(255,255,255,0.04)"}`,
+                      }}>
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded flex items-center justify-center" style={{
+                            background: extras[e.k] ? "#c4a478" : "transparent",
+                            border: `1px solid ${extras[e.k] ? "#c4a478" : "rgba(255,255,255,0.2)"}`,
+                            color: "#0a0c10",
+                          }}>
+                            {extras[e.k] && <Ic.Check />}
+                          </div>
+                          <span className="text-sm" style={{ color: extras[e.k] ? "white" : "rgba(255,255,255,0.5)" }}>{e.label}</span>
+                        </div>
+                        <span className="dd-mono text-xs" style={{ color: extras[e.k] ? "#c4a478" : "rgba(255,255,255,0.3)" }}>+${fmt(e.precio)}</span>
+                        <input type="checkbox" className="hidden" checked={extras[e.k]} onChange={() => setExtras(p => ({ ...p, [e.k]: !p[e.k] }))} />
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Resumen */}
+              <div className="lg:sticky lg:top-8 self-start">
+                <div className="p-7 rounded-2xl" style={{ background: "rgba(10,12,16,0.6)", border: "1px solid rgba(196,164,120,0.15)" }}>
+                  <span className="dd-mono text-xs tracking-widest block mb-6" style={{ color: "rgba(196,164,120,0.6)" }}>RESUMEN DEL PRESUPUESTO</span>
+
+                  <div className="space-y-3 pb-6 mb-6 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+                    <Row label={`Vuelo de fotogrametría (${fmt(superficie)} m²)`} value={`$${fmt(vueloUnit)}`} />
+                    <Row label={`× ${vuelosPorMes} ${vuelosPorMes === 1 ? "vuelo/mes" : "vuelos/mes"}`} value={`$${fmt(costoVuelos)}`} />
+                    {extraCosto > 0 && <Row label="Extras seleccionados" value={`+$${fmt(extraCosto)}`} />}
+                    {descuentoMeses > 0 && <Row label={`Descuento contrato ${meses} meses`} value={`–${(descuentoMeses * 100).toFixed(0)}%`} accent />}
+                  </div>
+
+                  <div className="mb-5">
+                    <span className="dd-mono text-xs tracking-widest block mb-1" style={{ color: "rgba(255,255,255,0.3)" }}>MENSUAL (ARS)</span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="dd-mono text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>$</span>
+                      <span className="text-3xl font-light" style={{ color: "#c4a478" }}>{fmt(totalMensual)}</span>
+                      <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>/mes</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-5 border-t" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+                    <span className="dd-mono text-xs tracking-widest block mb-1" style={{ color: "rgba(255,255,255,0.3)" }}>TOTAL PROYECTO ({meses} {meses === 1 ? "MES" : "MESES"})</span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="dd-mono text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>$</span>
+                      <span className="text-4xl font-light" style={{ color: "white" }}>{fmt(totalProyecto)}</span>
+                    </div>
+                    <span className="dd-mono text-xs mt-1 block" style={{ color: "rgba(255,255,255,0.25)" }}>Valores sin IVA · Ajustables por IPC trimestral</span>
+                  </div>
+
+                  <button onClick={onContacto} className="w-full mt-7 px-6 py-3.5 rounded-xl text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all" style={{ background: "#c4a478", color: "#0a0c10" }}>
+                    Solicitar propuesta formal <Ic.Arrow />
+                  </button>
+                  <p className="text-xs text-center mt-3" style={{ color: "rgba(255,255,255,0.3)" }}>Respuesta en menos de 24 hs hábiles</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ═══ EJEMPLOS DE ENTREGABLES ═══ */}
+          <div className="mb-24">
+            <div className="flex items-center gap-4 mb-8">
+              <span className="dd-mono text-xs tracking-widest" style={{ color: "rgba(196,164,120,0.5)" }}>EJEMPLOS DE ENTREGABLES</span>
+              <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.04)" }} />
+            </div>
+
+            <h2 className="text-2xl lg:text-3xl font-light mb-3" style={{ color: "white" }}>
+              Qué recibe la <span className="font-semibold" style={{ color: "#c4a478" }}>constructora</span>
+            </h2>
+            <p className="text-sm leading-relaxed mb-10 max-w-2xl" style={{ color: "rgba(255,255,255,0.35)" }}>
+              Cada vuelo produce un set de entregables digitales, compatibles con herramientas BIM/CAD y listos para presentar a dirección de obra, inversores o auditores.
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-5">
+              {entregables.map(e => (
+                <div key={e.id} className="p-7 rounded-2xl transition-all" style={{ background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.04)" }}
+                  onMouseEnter={ev => ev.currentTarget.style.borderColor = `${e.color}20`}
+                  onMouseLeave={ev => ev.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"}>
+                  <div className="flex items-start justify-between mb-5">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${e.color}0a`, border: `1px solid ${e.color}20`, color: e.color }}>
+                      {e.icon}
+                    </div>
+                    <span className="dd-mono text-xs tracking-widest" style={{ color: `${e.color}99` }}>{e.tag.toUpperCase()}</span>
+                  </div>
+
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: "white" }}>{e.nombre}</h3>
+                  <p className="text-sm leading-relaxed mb-5" style={{ color: "rgba(255,255,255,0.4)" }}>{e.desc}</p>
+
+                  <div className="grid grid-cols-2 gap-3 mb-5 pb-5 border-b" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+                    {e.specs.map((s, i) => (
+                      <div key={i}>
+                        <span className="dd-mono text-xs tracking-widest block mb-0.5" style={{ color: "rgba(255,255,255,0.25)" }}>{s[0].toUpperCase()}</span>
+                        <span className="text-xs" style={{ color: "rgba(255,255,255,0.65)" }}>{s[1]}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div>
+                    <span className="dd-mono text-xs tracking-widest block mb-1" style={{ color: "rgba(255,255,255,0.25)" }}>CASOS DE USO</span>
+                    <span className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>{e.uso}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ═══ CONDICIONES ═══ */}
+          <div className="mb-24">
+            <div className="flex items-center gap-4 mb-8">
+              <span className="dd-mono text-xs tracking-widest" style={{ color: "rgba(196,164,120,0.5)" }}>CONDICIONES COMERCIALES</span>
+              <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.04)" }} />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-5">
+              {[
+                { t: "Forma de pago", d: "50% al inicio del contrato, saldo mensual contra entrega. Factura A emitida por monotributo o responsable inscripto según corresponda." },
+                { t: "Plazos de entrega", d: "Material editado y publicado en portal cliente en un plazo máximo de 72 hs hábiles desde cada vuelo. Entregables crudos disponibles a las 24 hs." },
+                { t: "Re-vuelos y climatología", d: "Incluidos sin costo ante condiciones no aptas (viento > 10 m/s, lluvia, cobertura nubosa total). Se coordinan en ventana de ±48 hs." },
+                { t: "Confidencialidad", d: "Acuerdo NDA estándar firmado al inicio. Material no se difunde sin autorización escrita. Portal cliente con acceso por usuario y registro de descargas." },
+                { t: "Seguros y habilitaciones", d: "Pilotos con licencia ANAC vigente. Seguro de responsabilidad civil por USD 100.000. Permisos de vuelo gestionados por DesdeDrone." },
+                { t: "Propiedad intelectual", d: "Material crudo y entregables son propiedad del cliente. DesdeDrone retiene derecho de uso de material editado en portafolio con anonimización." },
+              ].map((c, i) => (
+                <div key={i} className="p-6 rounded-2xl" style={{ background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                  <h4 className="text-sm font-semibold mb-2" style={{ color: "#c4a478" }}>{c.t}</h4>
+                  <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{c.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="p-10 rounded-3xl text-center" style={{ background: "rgba(196,164,120,0.02)", border: "1px solid rgba(196,164,120,0.07)" }}>
+            <span className="dd-mono text-xs tracking-widest block mb-4" style={{ color: "rgba(196,164,120,0.4)" }}>PROPUESTA FORMAL</span>
+            <h2 className="text-2xl lg:text-3xl font-light mb-3" style={{ color: "white" }}>
+              Convertimos tu obra en <span className="font-semibold" style={{ color: "#c4a478" }}>documentación profesional</span>
+            </h2>
+            <p className="text-sm leading-relaxed max-w-lg mx-auto mb-8" style={{ color: "rgba(255,255,255,0.3)" }}>
+              Enviamos propuesta personalizada con cronograma de vuelos, cobertura exacta y precios cerrados en menos de 24 hs. Visita técnica sin cargo a obra en CABA y GBA.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <button onClick={onContacto} className="px-8 py-4 rounded-xl text-sm font-semibold tracking-wide flex items-center gap-2 transition-all" style={{ background: "#c4a478", color: "#0a0c10" }}>
+                Solicitar visita técnica <Ic.Arrow />
+              </button>
+              <button onClick={onBack} className="px-8 py-4 rounded-xl text-sm font-medium tracking-wide transition-all" style={{ color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.06)" }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(196,164,120,0.15)"} onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"}>
+                Ver casos de uso
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Footer */}
+        <footer className="border-t py-8 px-6 lg:px-12" style={{ borderColor: "rgba(255,255,255,0.03)" }}>
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2"><span style={{ color: "#c4a478" }}>◈</span><span className="text-xs font-medium tracking-wider" style={{ color: "rgba(255,255,255,0.25)" }}>DESDEDRONE.AR</span></div>
+            <p className="dd-mono text-xs" style={{ color: "rgba(255,255,255,0.12)" }}>© 2026 — Servicios aéreos con drones de precisión — Argentina</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function Row({ label, value, accent }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</span>
+      <span className="dd-mono text-xs" style={{ color: accent ? "#a0b890" : "rgba(255,255,255,0.8)" }}>{value}</span>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // STACK TECNOLÓGICO PAGE
 // ═══════════════════════════════════════════════════════════════════════
 function StackPage({ onBack }) {
@@ -1096,7 +1564,7 @@ function Landing({ onNavigate }) {
               <span className="text-sm font-semibold tracking-wider" style={{color:"white"}}>DESDEDRONE<span style={{color:"#c4a478"}}>.AR</span></span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              {[{t:"Servicios",v:null},{t:"Casos de Uso",v:"casos"},{t:"Plataforma",v:"stack"},{t:"Proceso",v:null},{t:"Contacto",v:null}].map(item=><a key={item.t} href="#" onClick={e=>{e.preventDefault();if(item.v)onNavigate(item.v);}} className="text-xs tracking-wider transition-colors" style={{color:"rgba(255,255,255,0.35)"}} onMouseEnter={e=>e.target.style.color="#c4a478"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.35)"}>{item.t}</a>)}
+              {[{t:"Servicios",v:null},{t:"Casos de Uso",v:"casos"},{t:"Presupuesto",v:"presupuesto"},{t:"Plataforma",v:"stack"},{t:"Contacto",v:null}].map(item=><a key={item.t} href="#" onClick={e=>{e.preventDefault();if(item.v)onNavigate(item.v);}} className="text-xs tracking-wider transition-colors" style={{color:"rgba(255,255,255,0.35)"}} onMouseEnter={e=>e.target.style.color="#c4a478"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.35)"}>{item.t}</a>)}
             </div>
             <button onClick={()=>onNavigate("login")} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium tracking-wider transition-all dd-glow" style={{border:"1px solid rgba(196,164,120,0.25)",color:"#c4a478"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(196,164,120,0.06)"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Portal Clientes</button>
           </div>
@@ -1219,11 +1687,12 @@ function Landing({ onNavigate }) {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto">
               {[
                 { onClick:()=>onNavigate("ortho"), icon:<Ic.Map/>, tag:"Visor Geoespacial", title:"Ortomosaicos · MDS · Nube de Puntos", desc:"Visualizá capas georreferenciadas, medí distancias y áreas, y analizá modelos de elevación directamente desde el browser.", color:"#c4a478" },
                 { onClick:()=>onNavigate("video"), icon:<Ic.Video/>, tag:"Sistema de Revisión", title:"Video aéreo · Observaciones · Descarga", desc:"Revisá el material editado con observaciones timestamped, descargá muestras con marca de agua y aprobá entregas.", color:"#8fb4c4" },
                 { onClick:()=>onNavigate("casos"), icon:<Ic.Building/>, tag:"Casos de Uso", title:"Constructoras · Energía · Ingeniería Civil", desc:"Casos reales de fotogrametría, inspección y producción aérea. Métricas concretas para evaluar el retorno en tu proyecto.", color:"#b89878" },
+                { onClick:()=>onNavigate("presupuesto"), icon:<Ic.Calculator/>, tag:"Presupuesto · Constructoras", title:"Paquetes · Calculadora · Entregables", desc:"Paquetes mensuales con precio cerrado, calculadora interactiva y ejemplos concretos de entregables por vuelo. Propuesta formal en 24 hs.", color:"#d4a053" },
               ].map((c,i)=>(
                 <div key={i} onClick={c.onClick} className="group relative p-8 lg:p-10 rounded-2xl cursor-pointer transition-all duration-500 dd-glow overflow-hidden" style={{background:"rgba(255,255,255,0.01)",border:"1px solid rgba(255,255,255,0.04)",minHeight:"280px"}}
                   onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(196,164,120,0.15)"} onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.04)"}>
@@ -1325,7 +1794,8 @@ export default function App() {
   if (view === "landing") return <Landing onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}}/>;
   if (view === "login") return <Login onLogin={()=>setView("dashboard")} onBack={()=>setView("landing")}/>;
   if (view === "stack") return <StackPage onBack={()=>setView("landing")}/>;
-  if (view === "casos") return <CasosDeUsoPage onBack={()=>setView("landing")} onContacto={()=>setView("landing")}/>;;
+  if (view === "casos") return <CasosDeUsoPage onBack={()=>setView("landing")} onContacto={()=>setView("presupuesto")}/>;
+  if (view === "presupuesto") return <PresupuestoPage onBack={()=>setView("landing")} onContacto={()=>setView("landing")}/>;
 
   // Dashboard shell
   const accent = "#c4a478";
