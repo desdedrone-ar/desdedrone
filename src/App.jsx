@@ -43,6 +43,14 @@ const Ic = {
   Package:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v9"/></svg>,
   Check:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M5 13l4 4L19 7"/></svg>,
   File:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M10 13h4M10 17h6"/></svg>,
+  Sun:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4"><circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>,
+  Moon:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>,
+  Menu:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path d="M3 12h18M3 6h18M3 18h18"/></svg>,
+  X:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path d="M18 6L6 18M6 6l12 12"/></svg>,
+  Mail:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>,
+  Send:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-4 h-4"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>,
+  Phone:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.37 1.9.72 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0122 16.92z"/></svg>,
+  MapPin:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>,
 };
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -1324,6 +1332,305 @@ function Row({ label, value, accent }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+// SERVICIOS PAGE — con apartado de leads
+// ═══════════════════════════════════════════════════════════════════════
+function ServiciosPage({ onBack, onPresupuesto, dark, onToggleTheme }) {
+  const dm = dark;
+  const bg = dm ? "#0a0c10" : "#f5f2ee";
+  const textPri = dm ? "white" : "#1a1612";
+  const textMed = dm ? "rgba(255,255,255,0.55)" : "rgba(30,24,18,0.65)";
+  const textFade = dm ? "rgba(255,255,255,0.35)" : "rgba(30,24,18,0.45)";
+  const textDim = dm ? "rgba(255,255,255,0.25)" : "rgba(30,24,18,0.3)";
+  const cardBg = dm ? "rgba(255,255,255,0.01)" : "rgba(255,255,255,0.7)";
+  const cardBorder = dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.18)";
+  const accent = "#c4a478";
+
+  const [form, setForm] = useState({ nombre: "", email: "", empresa: "", telefono: "", servicio: "", obra: "", mensaje: "" });
+  const [sent, setSent] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const servicios = [
+    { icon: <Ic.Map />, tag: "Fotogrametría", title: "Ortomosaicos georeferenciados", desc: "Mapas aéreos corregidos con precisión centimétrica. GeoTIFF listo para AutoCAD, QGIS, ArcGIS.", specs: ["GSD 1-3 cm", "WGS84 / POSGAR", "GeoTIFF + KMZ"], color: "#c4a478" },
+    { icon: <Ic.Layers />, tag: "Topografía 3D", title: "Modelos digitales MDS · MDT", desc: "Nubes de puntos LAS, modelos de elevación y curvas de nivel. Cálculo de volúmenes por polígono.", specs: ["LAS 1.4", "Curvas 0.25-1 m", "Volumetría"], color: "#8fb4c4" },
+    { icon: <Ic.Video />, tag: "Video Aéreo 4K", title: "Producción audiovisual profesional", desc: "Video editado con color grading, música, tipografía y versiones para redes sociales.", specs: ["4K @ 60fps", "D-Log / LUT", "Master + redes"], color: "#b89878" },
+    { icon: <Ic.Drone />, tag: "FPV Inmersivo", title: "Vuelos FPV para Real Estate", desc: "Recorridos cinematográficos de alto impacto. Diferencial para pre-ventas y obras en pozo.", specs: ["Velocidad hasta 150 km/h", "Master 4K", "Custom soundtrack"], color: "#d4a053" },
+    { icon: <Ic.Signal />, tag: "Inspección Termográfica", title: "Sensor FLIR radiométrico", desc: "Detección de fallas en paneles solares, puntos calientes en infraestructura y pérdidas energéticas.", specs: ["FLIR radiométrico", "Informe clasificado", "GPS por anomalía"], color: "#a0b890" },
+    { icon: <Ic.Building />, tag: "Seguimiento de Obra", title: "Monitoreo periódico para constructoras", desc: "Vuelos mensuales, quincenales o semanales con comparativa temporal. Portal cliente incluido.", specs: ["Portal cliente web", "Comparativa multi-vuelo", "Reporte PDF"], color: "#c4a478" },
+  ];
+
+  const industrias = [
+    { n: "Constructoras · Desarrolladoras", desc: "Seguimiento fechado de obra, documentación para inversores y salas de venta." },
+    { n: "Ingeniería Civil · Vialidad", desc: "Movimiento de suelos, volumetrías, perfiles y certificaciones topográficas." },
+    { n: "Energía Renovable", desc: "Inspección térmica de parques solares y eólicos. Detección de fallas y hot spots." },
+    { n: "Real Estate · Marketing", desc: "Producción aérea, FPV inmersivo y material multiformato para campañas." },
+    { n: "Municipios · Gobierno", desc: "Catastro aéreo, monitoreo vial, inspección de puentes e infraestructura pública." },
+    { n: "Agro · Forestal", desc: "Relevamientos multiespectrales, análisis de vigor vegetativo y planificación sanitaria." },
+  ];
+
+  const validate = () => {
+    const e = {};
+    if (!form.nombre.trim()) e.nombre = "Requerido";
+    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Email inválido";
+    if (!form.servicio) e.servicio = "Elegí un servicio";
+    if (!form.mensaje.trim() || form.mensaje.trim().length < 10) e.mensaje = "Contanos un poco más (mín. 10 caracteres)";
+    return e;
+  };
+
+  const submit = (ev) => {
+    ev.preventDefault();
+    const e = validate();
+    setErrors(e);
+    if (Object.keys(e).length === 0) {
+      try {
+        const leads = JSON.parse(localStorage.getItem("dd_leads") || "[]");
+        leads.push({ ...form, ts: new Date().toISOString() });
+        localStorage.setItem("dd_leads", JSON.stringify(leads));
+      } catch {}
+      setSent(true);
+    }
+  };
+
+  const inputStyle = (hasError) => ({
+    width: "100%",
+    padding: "12px 14px",
+    borderRadius: "12px",
+    background: dm ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.5)",
+    border: `1px solid ${hasError ? "rgba(212,80,80,0.4)" : dm ? "rgba(255,255,255,0.06)" : "rgba(196,164,120,0.15)"}`,
+    color: textPri,
+    fontSize: "14px",
+    fontFamily: "'DM Sans', sans-serif",
+    outline: "none",
+    transition: "border 0.2s",
+  });
+
+  return (
+    <div className="min-h-screen" style={{ background: bg, transition: "background 0.3s" }}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+      <style>{`.dd-body{font-family:'DM Sans',sans-serif}.dd-mono{font-family:'IBM Plex Mono',monospace}
+        .dd-input:focus { border-color: ${accent} !important; }
+        .dd-input::placeholder { color: ${textDim}; }
+      `}</style>
+
+      <div className="dd-body">
+        {/* Nav */}
+        <nav className="flex items-center justify-between px-6 lg:px-12 py-4 border-b" style={{ borderColor: dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.12)" }}>
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl" style={{ color: accent }}>◈</span>
+            <span className="text-sm font-semibold tracking-wider" style={{ color: textPri }}>DESDEDRONE<span style={{ color: accent }}>.AR</span></span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button onClick={onToggleTheme} className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: dm ? "rgba(196,164,120,0.08)" : "rgba(196,164,120,0.12)", color: accent, border: `1px solid rgba(196,164,120,0.2)` }}
+              title={dm ? "Modo claro" : "Modo oscuro"}>{dm ? <Ic.Sun /> : <Ic.Moon />}</button>
+            <button onClick={onBack} className="flex items-center gap-2 text-xs tracking-wider px-3 py-2" style={{ color: textFade }}
+              onMouseEnter={e => e.target.style.color = accent} onMouseLeave={e => e.target.style.color = textFade}>
+              ← Volver
+            </button>
+          </div>
+        </nav>
+
+        <div className="max-w-6xl mx-auto px-6 lg:px-12 py-20">
+
+          {/* Header */}
+          <div className="mb-20">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-px w-12" style={{ background: "rgba(196,164,120,0.3)" }} />
+              <span className="dd-mono text-xs tracking-widest" style={{ color: "rgba(196,164,120,0.6)" }}>SERVICIOS</span>
+            </div>
+            <h1 className="text-3xl lg:text-5xl font-light mb-4" style={{ color: textPri }}>
+              Aéreo profesional de <span className="font-semibold" style={{ color: accent }}>punta a punta</span>
+            </h1>
+            <p className="text-sm leading-relaxed max-w-2xl" style={{ color: textFade }}>
+              Desde el vuelo hasta el entregable final. Relevamientos de precisión centimétrica, producción audiovisual 4K y plataforma propia para visualizar, medir y compartir resultados.
+            </p>
+          </div>
+
+          {/* Servicios grid */}
+          <div className="mb-24 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {servicios.map((s, i) => (
+              <div key={i} className="p-7 rounded-2xl transition-all" style={{ background: cardBg, border: `1px solid ${cardBorder}` }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = `${s.color}30`}
+                onMouseLeave={e => e.currentTarget.style.borderColor = cardBorder}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-5" style={{ background: `${s.color}0a`, border: `1px solid ${s.color}20`, color: s.color }}>{s.icon}</div>
+                <span className="dd-mono text-xs tracking-widest block mb-2" style={{ color: s.color }}>{s.tag.toUpperCase()}</span>
+                <h3 className="text-lg font-semibold mb-2" style={{ color: textPri }}>{s.title}</h3>
+                <p className="text-sm leading-relaxed mb-4" style={{ color: textMed }}>{s.desc}</p>
+                <div className="flex flex-wrap gap-2 pt-4 border-t" style={{ borderColor: dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.1)" }}>
+                  {s.specs.map((sp, si) => (
+                    <span key={si} className="dd-mono text-xs px-2.5 py-1 rounded-md" style={{ background: dm ? "rgba(255,255,255,0.02)" : "rgba(196,164,120,0.06)", color: textFade, border: `1px solid ${dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.1)"}` }}>{sp}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Industrias */}
+          <div className="mb-24">
+            <div className="flex items-center gap-4 mb-8">
+              <span className="dd-mono text-xs tracking-widest" style={{ color: "rgba(196,164,120,0.6)" }}>INDUSTRIAS</span>
+              <div className="h-px flex-1" style={{ background: dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.12)" }} />
+            </div>
+            <h2 className="text-2xl lg:text-3xl font-light mb-10" style={{ color: textPri }}>
+              Sectores que <span className="font-semibold" style={{ color: accent }}>atendemos</span>
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {industrias.map((it, i) => (
+                <div key={i} className="p-5 rounded-xl" style={{ background: cardBg, border: `1px solid ${cardBorder}` }}>
+                  <h4 className="text-sm font-semibold mb-1.5" style={{ color: textPri }}>{it.n}</h4>
+                  <p className="text-xs leading-relaxed" style={{ color: textFade }}>{it.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ═══ APARTADO DE LEADS ═══ */}
+          <div className="mb-16 rounded-3xl overflow-hidden" style={{ background: dm ? "rgba(196,164,120,0.03)" : "rgba(255,255,255,0.8)", border: `1px solid ${dm ? "rgba(196,164,120,0.12)" : "rgba(196,164,120,0.2)"}` }}>
+            <div className="grid lg:grid-cols-2 gap-0">
+              {/* Info lateral */}
+              <div className="p-8 lg:p-12" style={{ background: dm ? "rgba(0,0,0,0.2)" : "rgba(196,164,120,0.05)", borderRight: `1px solid ${dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.12)"}` }}>
+                <span className="dd-mono text-xs tracking-widest block mb-4" style={{ color: "rgba(196,164,120,0.6)" }}>CONTACTO DIRECTO</span>
+                <h2 className="text-2xl lg:text-3xl font-light mb-4" style={{ color: textPri }}>
+                  Contanos sobre tu <span className="font-semibold" style={{ color: accent }}>proyecto</span>
+                </h2>
+                <p className="text-sm leading-relaxed mb-8" style={{ color: textFade }}>
+                  Respondemos en menos de 24 hs hábiles con una propuesta inicial. Si es en CABA o GBA, coordinamos visita técnica sin cargo.
+                </p>
+
+                <div className="space-y-4 mb-8">
+                  {[
+                    { icon: <Ic.Mail />, label: "Email", val: "hola@desdedrone.ar" },
+                    { icon: <Ic.Phone />, label: "WhatsApp", val: "+54 9 11 5555-2047" },
+                    { icon: <Ic.MapPin />, label: "Base de operaciones", val: "CABA · Buenos Aires · Argentina" },
+                  ].map((c, i) => (
+                    <div key={i} className="flex items-center gap-4">
+                      <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: `${accent}0a`, border: `1px solid ${accent}20`, color: accent }}>{c.icon}</div>
+                      <div>
+                        <span className="dd-mono text-xs tracking-widest block" style={{ color: textDim }}>{c.label.toUpperCase()}</span>
+                        <span className="text-sm" style={{ color: textMed }}>{c.val}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-6 border-t" style={{ borderColor: dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.12)" }}>
+                  <span className="dd-mono text-xs tracking-widest block mb-3" style={{ color: textDim }}>¿PREFERÍS VER PRECIOS DIRECTO?</span>
+                  <button onClick={onPresupuesto} className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-semibold tracking-wider transition-all" style={{ border: `1px solid ${accent}40`, color: accent }}
+                    onMouseEnter={e => e.currentTarget.style.background = `${accent}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                    Ver paquetes y calculadora <Ic.Arrow />
+                  </button>
+                </div>
+              </div>
+
+              {/* Formulario */}
+              <div className="p-8 lg:p-12">
+                {!sent ? (
+                  <form onSubmit={submit}>
+                    <span className="dd-mono text-xs tracking-widest block mb-6" style={{ color: "rgba(196,164,120,0.6)" }}>FORMULARIO DE CONTACTO</span>
+
+                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="dd-mono text-xs tracking-widest block mb-2" style={{ color: textFade }}>NOMBRE *</label>
+                        <input className="dd-input" type="text" placeholder="Tu nombre" value={form.nombre}
+                          onChange={e => setForm(f => ({ ...f, nombre: e.target.value }))}
+                          style={inputStyle(errors.nombre)} />
+                        {errors.nombre && <span className="text-xs mt-1 block" style={{ color: "#d45050" }}>{errors.nombre}</span>}
+                      </div>
+                      <div>
+                        <label className="dd-mono text-xs tracking-widest block mb-2" style={{ color: textFade }}>EMPRESA</label>
+                        <input className="dd-input" type="text" placeholder="Constructora, estudio, etc." value={form.empresa}
+                          onChange={e => setForm(f => ({ ...f, empresa: e.target.value }))}
+                          style={inputStyle(false)} />
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="dd-mono text-xs tracking-widest block mb-2" style={{ color: textFade }}>EMAIL *</label>
+                        <input className="dd-input" type="email" placeholder="tu@email.com" value={form.email}
+                          onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                          style={inputStyle(errors.email)} />
+                        {errors.email && <span className="text-xs mt-1 block" style={{ color: "#d45050" }}>{errors.email}</span>}
+                      </div>
+                      <div>
+                        <label className="dd-mono text-xs tracking-widest block mb-2" style={{ color: textFade }}>TELÉFONO</label>
+                        <input className="dd-input" type="tel" placeholder="+54 9 11..." value={form.telefono}
+                          onChange={e => setForm(f => ({ ...f, telefono: e.target.value }))}
+                          style={inputStyle(false)} />
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="dd-mono text-xs tracking-widest block mb-2" style={{ color: textFade }}>SERVICIO DE INTERÉS *</label>
+                      <select className="dd-input" value={form.servicio}
+                        onChange={e => setForm(f => ({ ...f, servicio: e.target.value }))}
+                        style={inputStyle(errors.servicio)}>
+                        <option value="">Elegí un servicio…</option>
+                        <option value="seguimiento-obra">Seguimiento de obra (constructoras)</option>
+                        <option value="fotogrametria">Fotogrametría · Ortomosaico</option>
+                        <option value="topografia-3d">Topografía 3D · MDS · Volumetría</option>
+                        <option value="video-4k">Video Aéreo 4K</option>
+                        <option value="fpv">FPV Inmersivo · Real Estate</option>
+                        <option value="inspeccion">Inspección térmica · Paneles solares</option>
+                        <option value="otro">Otro / No estoy seguro</option>
+                      </select>
+                      {errors.servicio && <span className="text-xs mt-1 block" style={{ color: "#d45050" }}>{errors.servicio}</span>}
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="dd-mono text-xs tracking-widest block mb-2" style={{ color: textFade }}>UBICACIÓN DE LA OBRA / PROYECTO</label>
+                      <input className="dd-input" type="text" placeholder="Ej: Palermo CABA · Pilar · Ruta 8 Km 50" value={form.obra}
+                        onChange={e => setForm(f => ({ ...f, obra: e.target.value }))}
+                        style={inputStyle(false)} />
+                    </div>
+
+                    <div className="mb-6">
+                      <label className="dd-mono text-xs tracking-widest block mb-2" style={{ color: textFade }}>CONTANOS DEL PROYECTO *</label>
+                      <textarea className="dd-input" rows="4" placeholder="Superficie, frecuencia de vuelo deseada, entregables específicos, fecha estimada de inicio…" value={form.mensaje}
+                        onChange={e => setForm(f => ({ ...f, mensaje: e.target.value }))}
+                        style={{ ...inputStyle(errors.mensaje), resize: "vertical", minHeight: "110px" }} />
+                      {errors.mensaje && <span className="text-xs mt-1 block" style={{ color: "#d45050" }}>{errors.mensaje}</span>}
+                    </div>
+
+                    <button type="submit" className="w-full py-4 rounded-xl text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all" style={{ background: accent, color: "#0a0c10" }}>
+                      <Ic.Send /> Enviar consulta
+                    </button>
+                    <p className="text-xs mt-3 text-center" style={{ color: textDim }}>Datos tratados bajo Ley 25.326 · No compartimos información con terceros</p>
+                  </form>
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-center py-12">
+                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style={{ background: `${accent}15`, border: `1px solid ${accent}40`, color: accent }}>
+                      <Ic.Check />
+                    </div>
+                    <span className="dd-mono text-xs tracking-widest block mb-3" style={{ color: "rgba(196,164,120,0.6)" }}>CONSULTA RECIBIDA</span>
+                    <h3 className="text-2xl font-light mb-3" style={{ color: textPri }}>Gracias <span style={{ color: accent }}>{form.nombre.split(" ")[0]}</span></h3>
+                    <p className="text-sm leading-relaxed mb-8 max-w-sm" style={{ color: textFade }}>
+                      Recibimos tu consulta sobre <strong style={{ color: textMed }}>{form.servicio.replace("-", " ")}</strong>. Te respondemos en menos de 24 hs hábiles al email <strong style={{ color: textMed }}>{form.email}</strong>.
+                    </p>
+                    <button onClick={() => { setSent(false); setForm({ nombre: "", email: "", empresa: "", telefono: "", servicio: "", obra: "", mensaje: "" }); }}
+                      className="text-xs tracking-wider" style={{ color: textFade }}>
+                      ← Enviar otra consulta
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Footer */}
+        <footer className="border-t py-8 px-6 lg:px-12" style={{ borderColor: dm ? "rgba(255,255,255,0.03)" : "rgba(196,164,120,0.1)" }}>
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2"><span style={{ color: accent }}>◈</span><span className="text-xs font-medium tracking-wider" style={{ color: textDim }}>DESDEDRONE.AR</span></div>
+            <p className="dd-mono text-xs" style={{ color: textDim }}>© 2026 — Servicios aéreos con drones de precisión — Argentina</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // STACK TECNOLÓGICO PAGE
 // ═══════════════════════════════════════════════════════════════════════
 function StackPage({ onBack }) {
@@ -1526,6 +1833,8 @@ function StackPage({ onBack }) {
 function Landing({ onNavigate }) {
   const [hoveredService, setHoveredService] = useState(null);
   const [scrollY, setScrollY] = useState(0);
+  const [darkMode, setDarkMode] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY);
@@ -1533,8 +1842,24 @@ function Landing({ onNavigate }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close mobile menu on scroll
+  useEffect(() => { if (scrollY > 10) setMobileMenuOpen(false); }, [scrollY]);
+
+  const dm = darkMode;
+  const bg       = dm ? "#0a0c10" : "#f5f2ee";
+  const navBg    = dm ? "rgba(10,12,16,0.92)" : "rgba(245,242,238,0.92)";
+  const navBorder= dm ? "rgba(196,164,120,0.06)" : "rgba(196,164,120,0.2)";
+  const textPri  = dm ? "white" : "#1a1612";
+  const textFade = dm ? "rgba(255,255,255,0.35)" : "rgba(30,24,18,0.45)";
+  const textFade2= dm ? "rgba(255,255,255,0.45)" : "rgba(30,24,18,0.55)";
+  const accent   = "#c4a478";
+  const cardBg   = dm ? "rgba(255,255,255,0.01)" : "rgba(255,255,255,0.7)";
+  const cardBorder= dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.15)";
+
+  const NAV_ITEMS = [{t:"Servicios",v:null},{t:"Casos de Uso",v:"casos"},{t:"Presupuesto",v:"presupuesto"},{t:"Plataforma",v:"stack"},{t:"Contacto",v:null}];
+
   return (
-    <div className="min-h-screen" style={{ background: "#0a0c10" }}>
+    <div className="min-h-screen" style={{ background: bg, transition: "background 0.3s" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
       <style>{`
         .dd-body { font-family: 'DM Sans', sans-serif; }
@@ -1548,26 +1873,94 @@ function Landing({ onNavigate }) {
         .dd-line { width: 0; animation: ddLine 1.5s ease 0.6s forwards; }
         @keyframes ddLine { to { width: 100%; } }
         .dd-glow { box-shadow: 0 0 0 rgba(196,164,120,0); transition: box-shadow 0.4s; }
-        .dd-glow:hover { box-shadow: 0 8px 40px rgba(196,164,120,0.08); }
+        .dd-glow:hover { box-shadow: 0 8px 40px rgba(196,164,120,0.12); }
+        .dd-mobile-menu { animation: ddSlideDown 0.22s ease; }
+        @keyframes ddSlideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+        .dd-theme-btn { transition: transform 0.2s, background 0.2s; }
+        .dd-theme-btn:hover { transform: rotate(15deg); }
       `}</style>
 
       <div className="dd-body">
         {/* ── NAV ── */}
         <nav className="fixed top-0 left-0 right-0 z-50 transition-all" style={{
-          background: scrollY > 50 ? "rgba(10,12,16,0.9)" : "transparent",
-          backdropFilter: scrollY > 50 ? "blur(16px)" : "none",
-          borderBottom: scrollY > 50 ? "1px solid rgba(196,164,120,0.06)" : "1px solid transparent",
+          background: scrollY > 50 || mobileMenuOpen ? navBg : "transparent",
+          backdropFilter: scrollY > 50 || mobileMenuOpen ? "blur(16px)" : "none",
+          borderBottom: scrollY > 50 ? `1px solid ${navBorder}` : "1px solid transparent",
         }}>
           <div className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-12 py-4">
+            {/* Logo */}
             <div className="flex items-center gap-2.5">
-              <span className="text-xl" style={{color:"#c4a478"}}>◈</span>
-              <span className="text-sm font-semibold tracking-wider" style={{color:"white"}}>DESDEDRONE<span style={{color:"#c4a478"}}>.AR</span></span>
+              <span className="text-xl" style={{color: accent}}>◈</span>
+              <span className="text-sm font-semibold tracking-wider" style={{color: textPri}}>DESDEDRONE<span style={{color: accent}}>.AR</span></span>
             </div>
+
+            {/* Desktop links */}
             <div className="hidden md:flex items-center gap-8">
-              {[{t:"Servicios",v:null},{t:"Casos de Uso",v:"casos"},{t:"Presupuesto",v:"presupuesto"},{t:"Plataforma",v:"stack"},{t:"Contacto",v:null}].map(item=><a key={item.t} href="#" onClick={e=>{e.preventDefault();if(item.v)onNavigate(item.v);}} className="text-xs tracking-wider transition-colors" style={{color:"rgba(255,255,255,0.35)"}} onMouseEnter={e=>e.target.style.color="#c4a478"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.35)"}>{item.t}</a>)}
+              {NAV_ITEMS.map(item => (
+                <a key={item.t} href="#" onClick={e => { e.preventDefault(); if (item.v) onNavigate(item.v); }}
+                  className="text-xs tracking-wider transition-colors"
+                  style={{color: textFade}}
+                  onMouseEnter={e => e.target.style.color = accent}
+                  onMouseLeave={e => e.target.style.color = textFade}>
+                  {item.t}
+                </a>
+              ))}
             </div>
-            <button onClick={()=>onNavigate("login")} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium tracking-wider transition-all dd-glow" style={{border:"1px solid rgba(196,164,120,0.25)",color:"#c4a478"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(196,164,120,0.06)"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Portal Clientes</button>
+
+            {/* Right controls */}
+            <div className="flex items-center gap-2">
+              {/* Dark/Light toggle */}
+              <button id="theme-toggle" onClick={() => setDarkMode(d => !d)}
+                className="dd-theme-btn w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: dm ? "rgba(196,164,120,0.08)" : "rgba(196,164,120,0.12)", color: accent, border: `1px solid rgba(196,164,120,0.2)` }}
+                title={dm ? "Modo claro" : "Modo oscuro"}>
+                {dm ? <Ic.Sun /> : <Ic.Moon />}
+              </button>
+
+              {/* Portal button — hidden on mobile */}
+              <button onClick={() => onNavigate("login")}
+                className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium tracking-wider transition-all dd-glow"
+                style={{border:`1px solid rgba(196,164,120,0.25)`, color: accent}}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(196,164,120,0.06)"}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                Portal Clientes
+              </button>
+
+              {/* Hamburger — only mobile */}
+              <button id="mobile-menu-toggle" onClick={() => setMobileMenuOpen(o => !o)}
+                className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+                style={{ background: mobileMenuOpen ? "rgba(196,164,120,0.1)" : "rgba(255,255,255,0.05)", color: textFade, border: `1px solid ${mobileMenuOpen ? "rgba(196,164,120,0.2)" : "rgba(255,255,255,0.08)"}` }}
+                aria-label="Menú">
+                {mobileMenuOpen ? <Ic.X /> : <Ic.Menu />}
+              </button>
+            </div>
           </div>
+
+          {/* ── MOBILE MENU ── */}
+          {mobileMenuOpen && (
+            <div className="dd-mobile-menu md:hidden px-6 pb-5 pt-1"
+              style={{ borderTop: `1px solid ${navBorder}` }}>
+              <div className="flex flex-col gap-1">
+                {NAV_ITEMS.map(item => (
+                  <a key={item.t} href="#"
+                    onClick={e => { e.preventDefault(); setMobileMenuOpen(false); if (item.v) onNavigate(item.v); }}
+                    className="flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-medium transition-all"
+                    style={{ color: textFade2, background: "transparent" }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(196,164,120,0.06)"; e.currentTarget.style.color = accent; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = textFade2; }}>
+                    {item.t}
+                    <span style={{color: "rgba(196,164,120,0.3)", fontSize: "10px"}}>→</span>
+                  </a>
+                ))}
+                <div style={{ height: 1, background: `${navBorder}`, margin: "6px 0" }} />
+                <button onClick={() => { setMobileMenuOpen(false); onNavigate("login"); }}
+                  className="w-full py-3.5 rounded-xl text-sm font-semibold tracking-wider"
+                  style={{ background: accent, color: "#0a0c10" }}>
+                  Portal Clientes
+                </button>
+              </div>
+            </div>
+          )}
         </nav>
 
         {/* ── HERO ── */}
