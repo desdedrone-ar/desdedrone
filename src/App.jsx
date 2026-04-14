@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 // ═══════════════════════════════════════════════════════════════════════
 // DATA
@@ -134,6 +136,93 @@ function Counter({ end, suffix = "", prefix = "" }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+// LEAFLET MAP — real georeferenced orthophoto + base map
+// ═══════════════════════════════════════════════════════════════════════
+function LeafletMap({ metaUrl = "/maps/juana-manso.json" }) {
+  const containerRef = useRef(null);
+  const mapRef = useRef(null);
+  const [meta, setMeta] = useState(null);
+  const [opacity, setOpacity] = useState(0.9);
+  const [showPhotos, setShowPhotos] = useState(false);
+  const overlayRef = useRef(null);
+  const photosLayerRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const m = await fetch(metaUrl).then(r => r.json());
+      if (cancelled) return;
+      setMeta(m);
+
+      const map = L.map(containerRef.current, { zoomControl: true, attributionControl: true });
+      mapRef.current = map;
+
+      L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        maxZoom: 22, maxNativeZoom: 19, attribution: "© Esri · World Imagery",
+      }).addTo(map);
+
+      const bounds = L.latLngBounds(m.bounds.sw, m.bounds.ne);
+      overlayRef.current = L.imageOverlay(m.ortho, bounds, { opacity: 0.9, interactive: true }).addTo(map);
+
+      fetch("/maps/bounds.geojson").then(r => r.json()).then(gj => {
+        if (cancelled || !mapRef.current) return;
+        L.geoJSON(gj, { style: { color: "#c4a478", weight: 2, fill: false, dashArray: "4 4" } }).addTo(mapRef.current);
+      }).catch(() => {});
+
+      map.fitBounds(bounds, { padding: [20, 20] });
+    })();
+    return () => {
+      cancelled = true;
+      if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; }
+    };
+  }, [metaUrl]);
+
+  useEffect(() => {
+    if (overlayRef.current) overlayRef.current.setOpacity(opacity);
+  }, [opacity]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (showPhotos && !photosLayerRef.current) {
+      fetch("/maps/shots.geojson").then(r => r.json()).then(gj => {
+        if (!mapRef.current) return;
+        photosLayerRef.current = L.geoJSON(gj, {
+          pointToLayer: (_, latlng) => L.circleMarker(latlng, {
+            radius: 3, color: "#d4a053", weight: 1, fillColor: "#d4a053", fillOpacity: 0.7,
+          }),
+        }).addTo(map);
+      }).catch(() => {});
+    } else if (!showPhotos && photosLayerRef.current) {
+      map.removeLayer(photosLayerRef.current);
+      photosLayerRef.current = null;
+    }
+  }, [showPhotos]);
+
+  return (
+    <div className="relative w-full h-full" style={{ background: "#0a0c10" }}>
+      <div ref={containerRef} className="w-full h-full" />
+      {meta && (
+        <div className="absolute top-3 left-3 z-[500] flex flex-col gap-2 p-3 rounded-lg" style={{ background: "rgba(10,12,16,0.82)", border: "1px solid rgba(196,164,120,0.18)", backdropFilter: "blur(10px)", minWidth: 220 }}>
+          <div>
+            <div className="text-xs font-semibold" style={{ color: "rgba(255,255,255,0.8)" }}>{meta.name}</div>
+            <div className="text-xs font-mono mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>{meta.date} · {meta.projection}</div>
+          </div>
+          <label className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+            Opacidad ortofoto
+            <input type="range" min="0" max="1" step="0.05" value={opacity} onChange={e => setOpacity(parseFloat(e.target.value))} className="flex-1" style={{ accentColor: "#c4a478" }} />
+          </label>
+          <label className="flex items-center gap-2 text-xs cursor-pointer" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <input type="checkbox" checked={showPhotos} onChange={e => setShowPhotos(e.target.checked)} style={{ accentColor: "#c4a478" }} />
+            Mostrar tomas GPS
+          </label>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // ORTHO VIEWER
 // ═══════════════════════════════════════════════════════════════════════
 const terrainH = (nx, ny) =>
@@ -144,7 +233,7 @@ const terrainH = (nx, ny) =>
 
 function OrthoViewer() {
   const canvasRef = useRef(null);
-  const [layer, setLayer] = useState("ortho");
+  const [layer, setLayer] = useState("real");
   const [zoom, setZoom] = useState(1);
   const [measuring, setMeasuring] = useState(false);
   const [info, setInfo] = useState(null);
@@ -288,6 +377,7 @@ function OrthoViewer() {
   }, [layer, zoom]);
 
   const LAYERS = [
+    { id: "real",       label: "Mapa Real",      icon: <Ic.Crosshair /> },
     { id: "ortho",      label: "Ortofoto",      icon: <Ic.Map /> },
     { id: "pointcloud", label: "Nube de Puntos", icon: <Ic.Crosshair /> },
     { id: "dsm",        label: "Elevación DSM",  icon: <Ic.Layers /> },
@@ -295,6 +385,7 @@ function OrthoViewer() {
   ];
 
   const META = {
+    real:       [["Proyecto","Juana Manso"],["Ubicación","Puerto Madero, CABA"],["Fecha vuelo","2026-02-27"],["Proyección","UTM 21S / WGS84"],["Puntos","12.36 M"],["GSD","5 cm"],["Elev. mín","-15.33 m"],["Elev. máx","21.99 m"],["Archivo","odm_orthophoto.tif"]],
     ortho:      [["Resolución","1.8 cm/px"],["Fecha vuelo","2026-03-15"],["Área","243 ha"],["GSD","1.82 cm"],["Altitud","65 m AGL"],["Cámara","DJI Air 2S"],["Archivo","lote14_ortho.tif"],["Tamaño","2.4 GB"]],
     pointcloud: [["Puntos","48.2 M"],["Densidad","12.4 pts/m²"],["Formato","LAS 1.4"],["Clases","Suelo · Veg. · Edificios"],["Archivo","lote14_cloud.laz"],["Tamaño","890 MB"]],
     dsm:        [["Resolución","5 cm/px"],["Elev. mín","118.3 m"],["Elev. máx","203.7 m"],["Diferencia","85.4 m"],["Fecha","2026-03-15"],["Archivo","lote14_dsm.tif"],["Tamaño","320 MB"]],
@@ -341,8 +432,12 @@ function OrthoViewer() {
 
       {/* Canvas area + metadata panel */}
       <div className="flex flex-1 overflow-hidden">
-        <div className="flex-1 relative overflow-hidden cursor-crosshair" onClick={handleClick}>
-          <canvas ref={canvasRef} className="w-full h-full" style={{ transform: `scale(${zoom})`, transformOrigin: "center" }} />
+        <div className="flex-1 relative overflow-hidden cursor-crosshair" onClick={layer === "real" ? undefined : handleClick}>
+          {layer === "real" ? (
+            <LeafletMap />
+          ) : (
+            <canvas ref={canvasRef} className="w-full h-full" style={{ transform: `scale(${zoom})`, transformOrigin: "center" }} />
+          )}
           {info && (
             <div className="absolute bottom-3 left-3 px-3 py-2 rounded-lg text-xs font-mono" style={{ background: "rgba(0,0,0,0.85)", color: "rgba(255,255,255,0.75)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <span style={{ color: "#c4a478" }}>LAT</span> {info.lat} &nbsp;
