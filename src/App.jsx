@@ -1830,10 +1830,9 @@ function StackPage({ onBack }) {
 // ═══════════════════════════════════════════════════════════════════════
 // LANDING — PREMIUM / ARCHITECTURAL
 // ═══════════════════════════════════════════════════════════════════════
-function Landing({ onNavigate }) {
+function Landing({ onNavigate, darkMode, setDarkMode }) {
   const [hoveredService, setHoveredService] = useState(null);
   const [scrollY, setScrollY] = useState(0);
-  const [darkMode, setDarkMode] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -1856,7 +1855,7 @@ function Landing({ onNavigate }) {
   const cardBg   = dm ? "rgba(255,255,255,0.01)" : "rgba(255,255,255,0.7)";
   const cardBorder= dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.15)";
 
-  const NAV_ITEMS = [{t:"Servicios",v:null},{t:"Casos de Uso",v:"casos"},{t:"Presupuesto",v:"presupuesto"},{t:"Plataforma",v:"stack"},{t:"Contacto",v:null}];
+  const NAV_ITEMS = [{t:"Servicios",v:"servicios"},{t:"Casos de Uso",v:"casos"},{t:"Presupuesto",v:"presupuesto"},{t:"Plataforma",v:"stack"},{t:"Contacto",v:null}];
 
   return (
     <div className="min-h-screen" style={{ background: bg, transition: "background 0.3s" }}>
@@ -2080,14 +2079,15 @@ function Landing({ onNavigate }) {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-5 max-w-6xl mx-auto">
               {[
                 { onClick:()=>onNavigate("ortho"), icon:<Ic.Map/>, tag:"Visor Geoespacial", title:"Ortomosaicos · MDS · Nube de Puntos", desc:"Visualizá capas georreferenciadas, medí distancias y áreas, y analizá modelos de elevación directamente desde el browser.", color:"#c4a478" },
                 { onClick:()=>onNavigate("video"), icon:<Ic.Video/>, tag:"Sistema de Revisión", title:"Video aéreo · Observaciones · Descarga", desc:"Revisá el material editado con observaciones timestamped, descargá muestras con marca de agua y aprobá entregas.", color:"#8fb4c4" },
+                { onClick:()=>onNavigate("servicios"), icon:<Ic.Drone/>, tag:"Catálogo de Servicios", title:"Fotogrametría · Video · Inspección", desc:"Detalles técnicos de cada servicio, industrias que atendemos y formulario directo para solicitar una propuesta personalizada.", color:"#a0b890" },
                 { onClick:()=>onNavigate("casos"), icon:<Ic.Building/>, tag:"Casos de Uso", title:"Constructoras · Energía · Ingeniería Civil", desc:"Casos reales de fotogrametría, inspección y producción aérea. Métricas concretas para evaluar el retorno en tu proyecto.", color:"#b89878" },
                 { onClick:()=>onNavigate("presupuesto"), icon:<Ic.Calculator/>, tag:"Presupuesto · Constructoras", title:"Paquetes · Calculadora · Entregables", desc:"Paquetes mensuales con precio cerrado, calculadora interactiva y ejemplos concretos de entregables por vuelo. Propuesta formal en 24 hs.", color:"#d4a053" },
               ].map((c,i)=>(
-                <div key={i} onClick={c.onClick} className="group relative p-8 lg:p-10 rounded-2xl cursor-pointer transition-all duration-500 dd-glow overflow-hidden" style={{background:"rgba(255,255,255,0.01)",border:"1px solid rgba(255,255,255,0.04)",minHeight:"280px"}}
+                <div key={i} onClick={c.onClick} className="group relative p-8 lg:p-10 rounded-2xl cursor-pointer transition-all duration-500 dd-glow overflow-hidden" style={{background:"rgba(255,255,255,0.01)",border:"1px solid rgba(255,255,255,0.04)",minHeight:"280px",...(i===2&&{gridColumn:"span 1"})}}
                   onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(196,164,120,0.15)"} onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.04)"}>
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{background:`radial-gradient(circle at ${i===0?"85% 85%":"15% 85%"}, ${c.color}06, transparent 60%)`}}/>
                   <div className="relative">
@@ -2183,12 +2183,14 @@ function Landing({ onNavigate }) {
 export default function App() {
   const [view, setView] = useState("landing");
   const [proj, setProj] = useState(null);
+  const [darkMode, setDarkMode] = useState(true);
 
-  if (view === "landing") return <Landing onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}}/>;
+  if (view === "landing") return <Landing onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}} darkMode={darkMode} setDarkMode={setDarkMode}/>;
   if (view === "login") return <Login onLogin={()=>setView("dashboard")} onBack={()=>setView("landing")}/>;
   if (view === "stack") return <StackPage onBack={()=>setView("landing")}/>;
   if (view === "casos") return <CasosDeUsoPage onBack={()=>setView("landing")} onContacto={()=>setView("presupuesto")}/>;
   if (view === "presupuesto") return <PresupuestoPage onBack={()=>setView("landing")} onContacto={()=>setView("landing")}/>;
+  if (view === "servicios") return <ServiciosPage onBack={()=>setView("landing")} onPresupuesto={()=>setView("presupuesto")} dark={darkMode} onToggleTheme={()=>setDarkMode(d=>!d)}/>;
 
   // Dashboard shell
   const accent = "#c4a478";
