@@ -1849,8 +1849,10 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
   const navBg    = dm ? "rgba(10,12,16,0.92)" : "rgba(245,242,238,0.92)";
   const navBorder= dm ? "rgba(196,164,120,0.06)" : "rgba(196,164,120,0.2)";
   const textPri  = dm ? "white" : "#1a1612";
+  const textMed  = dm ? "rgba(255,255,255,0.55)" : "rgba(30,24,18,0.65)";
   const textFade = dm ? "rgba(255,255,255,0.35)" : "rgba(30,24,18,0.45)";
   const textFade2= dm ? "rgba(255,255,255,0.45)" : "rgba(30,24,18,0.55)";
+  const textDim  = dm ? "rgba(255,255,255,0.25)" : "rgba(30,24,18,0.3)";
   const accent   = "#c4a478";
   const cardBg   = dm ? "rgba(255,255,255,0.01)" : "rgba(255,255,255,0.7)";
   const cardBorder= dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.15)";
@@ -1964,18 +1966,18 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
 
         {/* ── HERO ── */}
         <section className="relative min-h-screen flex items-center overflow-hidden">
-          <TopoCanvas />
-          <div className="absolute inset-0" style={{background:"radial-gradient(ellipse at 70% 40%, rgba(196,164,120,0.04), transparent 60%)"}} />
-          
+          {dm && <TopoCanvas />}
+          <div className="absolute inset-0" style={{background: dm ? "radial-gradient(ellipse at 70% 40%, rgba(196,164,120,0.04), transparent 60%)" : "radial-gradient(ellipse at 70% 40%, rgba(196,164,120,0.08), transparent 60%)"}} />
+
           <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full">
             <div className="max-w-3xl pt-24">
               {/* Coordinates badge */}
               <div className="dd-fade-up flex items-center gap-4 mb-12">
                 <div className="h-px w-12" style={{background:"rgba(196,164,120,0.3)"}}/>
-                <span className="dd-mono text-xs tracking-widest" style={{color:"rgba(196,164,120,0.5)"}}>34°36'S  58°22'W — ARGENTINA</span>
+                <span className="dd-mono text-xs tracking-widest" style={{color:"rgba(196,164,120,0.6)"}}>34°36'S  58°22'W — ARGENTINA</span>
               </div>
 
-              <h1 className="dd-fade-up dd-fade-up-d1 text-4xl lg:text-7xl font-light leading-tight tracking-tight mb-3" style={{color:"white"}}>
+              <h1 className="dd-fade-up dd-fade-up-d1 text-4xl lg:text-7xl font-light leading-tight tracking-tight mb-3" style={{color: dm ? "white" : textPri}}>
                 Visión aérea para
               </h1>
               <h1 className="dd-fade-up dd-fade-up-d2 text-4xl lg:text-7xl font-semibold leading-tight tracking-tight mb-10" style={{color:"#c4a478"}}>
@@ -1986,13 +1988,13 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
                 <div className="dd-line h-px mb-8" style={{background:"linear-gradient(90deg, rgba(196,164,120,0.3), transparent)"}} />
               </div>
 
-              <p className="dd-fade-up dd-fade-up-d3 text-base lg:text-lg leading-relaxed max-w-xl mb-4" style={{color:"rgba(255,255,255,0.45)"}}>
+              <p className="dd-fade-up dd-fade-up-d3 text-base lg:text-lg leading-relaxed max-w-xl mb-4" style={{color: dm ? "rgba(255,255,255,0.45)" : textMed}}>
                 Fotogrametría, ortomosaicos, modelos de elevación y producción aérea profesional.
               </p>
-              <p className="dd-fade-up dd-fade-up-d3 text-base lg:text-lg leading-relaxed max-w-xl mb-5" style={{color:"rgba(255,255,255,0.45)"}}>
+              <p className="dd-fade-up dd-fade-up-d3 text-base lg:text-lg leading-relaxed max-w-xl mb-5" style={{color: dm ? "rgba(255,255,255,0.45)" : textMed}}>
                 Vuelos FPV para Real Estate de alto impacto.
               </p>
-              <p className="dd-fade-up dd-fade-up-d3 text-sm leading-relaxed max-w-xl mb-12" style={{color:"rgba(255,255,255,0.3)"}}>
+              <p className="dd-fade-up dd-fade-up-d3 text-sm leading-relaxed max-w-xl mb-12" style={{color: dm ? "rgba(255,255,255,0.3)" : textFade}}>
                 Procesamos y entregamos datos de alta precisión en una plataforma propia diseñada para visualizar, medir y analizar cada proyecto en detalle.
               </p>
 
@@ -2000,7 +2002,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
                 <button onClick={()=>onNavigate("login")} className="flex items-center gap-3 px-8 py-4 rounded-xl text-sm font-semibold tracking-wide transition-all dd-glow" style={{background:"#c4a478",color:"#0a0c10"}}>
                   Acceder al portal <Ic.Arrow />
                 </button>
-                <button className="flex items-center gap-3 px-8 py-4 rounded-xl text-sm font-medium tracking-wide transition-all" style={{color:"rgba(255,255,255,0.5)",border:"1px solid rgba(255,255,255,0.08)"}} onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(196,164,120,0.2)"} onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.08)"}>
+                <button className="flex items-center gap-3 px-8 py-4 rounded-xl text-sm font-medium tracking-wide transition-all" style={{color: dm ? "rgba(255,255,255,0.5)" : textFade, border: dm ? "1px solid rgba(255,255,255,0.08)" : `1px solid ${accent}20`}} onMouseEnter={e=>e.currentTarget.style.borderColor=dm?"rgba(196,164,120,0.2)":"rgba(196,164,120,0.4)"} onMouseLeave={e=>e.currentTarget.style.borderColor=dm?"rgba(255,255,255,0.08)":`${accent}20`}>
                   Solicitar presupuesto
                 </button>
               </div>
@@ -2018,7 +2020,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
                     <span className="text-3xl font-light dd-mono" style={{color:"#c4a478"}}>{m.n}</span>
                     <span className="text-xs dd-mono" style={{color:"rgba(196,164,120,0.5)"}}>{m.u}</span>
                   </div>
-                  <span className="text-xs tracking-wider" style={{color:"rgba(255,255,255,0.2)"}}>{m.l}</span>
+                  <span className="text-xs tracking-wider" style={{color: dm ? "rgba(255,255,255,0.2)" : textFade}}>{m.l}</span>
                 </div>
               ))}
             </div>
@@ -2052,13 +2054,13 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
                   onMouseEnter={()=>setHoveredService(i)} onMouseLeave={()=>setHoveredService(null)}
                 >
                   <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-6 transition-all" style={{background:`${s.color}0c`,border:`1px solid ${s.color}18`,color:s.color}}>{s.icon}</div>
-                  <h3 className="text-lg font-semibold mb-3" style={{color:"white"}}>{s.title}</h3>
-                  <p className="text-sm leading-relaxed mb-6" style={{color:"rgba(255,255,255,0.35)"}}>{s.desc}</p>
+                  <h3 className="text-lg font-semibold mb-3" style={{color:textPri}}>{s.title}</h3>
+                  <p className="text-sm leading-relaxed mb-6" style={{color:textFade}}>{s.desc}</p>
                   <div className="space-y-2">
                     {s.specs.map((sp,j)=>(
                       <div key={j} className="flex items-center gap-2.5">
                         <div className="w-1 h-1 rounded-full" style={{background:s.color}}/>
-                        <span className="dd-mono text-xs" style={{color:"rgba(255,255,255,0.4)"}}>{sp}</span>
+                        <span className="dd-mono text-xs" style={{color:textMed}}>{sp}</span>
                       </div>
                     ))}
                   </div>
@@ -2069,12 +2071,12 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
         </section>
 
         {/* ── PLATFORM ── */}
-        <section className="relative py-32" style={{background:"rgba(0,0,0,0.2)"}}>
+        <section className="relative py-32" style={{background: dm ? "rgba(0,0,0,0.2)" : "rgba(196,164,120,0.04)"}}>
           <div className="max-w-7xl mx-auto px-6 lg:px-12">
             <div className="text-center mb-20">
               <span className="dd-mono text-xs tracking-widest block mb-3" style={{color:"rgba(196,164,120,0.5)"}}>PLATAFORMA</span>
-              <h2 className="text-3xl lg:text-5xl font-light mb-4" style={{color:"white"}}>Plataforma de <span className="font-semibold" style={{color:"#c4a478"}}>entregables</span></h2>
-              <p className="text-sm max-w-lg mx-auto leading-relaxed" style={{color:"rgba(255,255,255,0.35)"}}>
+              <h2 className="text-3xl lg:text-5xl font-light mb-4" style={{color:textPri}}>Plataforma de <span className="font-semibold" style={{color:"#c4a478"}}>entregables</span></h2>
+              <p className="text-sm max-w-lg mx-auto leading-relaxed" style={{color:textFade}}>
                 Centralizá mapas, mediciones, videos y comentarios en un entorno único de visualización.
               </p>
             </div>
@@ -2087,14 +2089,14 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
                 { onClick:()=>onNavigate("casos"), icon:<Ic.Building/>, tag:"Casos de Uso", title:"Constructoras · Energía · Ingeniería Civil", desc:"Casos reales de fotogrametría, inspección y producción aérea. Métricas concretas para evaluar el retorno en tu proyecto.", color:"#b89878" },
                 { onClick:()=>onNavigate("presupuesto"), icon:<Ic.Calculator/>, tag:"Presupuesto · Constructoras", title:"Paquetes · Calculadora · Entregables", desc:"Paquetes mensuales con precio cerrado, calculadora interactiva y ejemplos concretos de entregables por vuelo. Propuesta formal en 24 hs.", color:"#d4a053" },
               ].map((c,i)=>(
-                <div key={i} onClick={c.onClick} className="group relative p-8 lg:p-10 rounded-2xl cursor-pointer transition-all duration-500 dd-glow overflow-hidden" style={{background:"rgba(255,255,255,0.01)",border:"1px solid rgba(255,255,255,0.04)",minHeight:"280px",...(i===2&&{gridColumn:"span 1"})}}
-                  onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(196,164,120,0.15)"} onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.04)"}>
+                <div key={i} onClick={c.onClick} className="group relative p-8 lg:p-10 rounded-2xl cursor-pointer transition-all duration-500 dd-glow overflow-hidden" style={{background:cardBg, border:`1px solid ${cardBorder}`,minHeight:"280px",...(i===2&&{gridColumn:"span 1"})}}
+                  onMouseEnter={e=>e.currentTarget.style.borderColor=`${c.color}40`} onMouseLeave={e=>e.currentTarget.style.borderColor=cardBorder}>
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{background:`radial-gradient(circle at ${i===0?"85% 85%":"15% 85%"}, ${c.color}06, transparent 60%)`}}/>
                   <div className="relative">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-5" style={{background:`${c.color}0a`,border:`1px solid ${c.color}15`,color:c.color}}>{c.icon}</div>
                     <span className="dd-mono text-xs tracking-widest block mb-3" style={{color:c.color}}>{c.tag}</span>
-                    <h3 className="text-xl font-semibold mb-3" style={{color:"white"}}>{c.title}</h3>
-                    <p className="text-sm leading-relaxed mb-8" style={{color:"rgba(255,255,255,0.35)"}}>{c.desc}</p>
+                    <h3 className="text-xl font-semibold mb-3" style={{color:textPri}}>{c.title}</h3>
+                    <p className="text-sm leading-relaxed mb-8" style={{color:textFade}}>{c.desc}</p>
                     <span className="inline-flex items-center gap-2 text-xs font-medium tracking-wider transition-all" style={{color:c.color}}>Ver demo <Ic.Arrow/></span>
                   </div>
                 </div>
@@ -2109,7 +2111,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
             <div className="flex items-end justify-between mb-20">
               <div>
                 <span className="dd-mono text-xs tracking-widest block mb-3" style={{color:"rgba(196,164,120,0.5)"}}>PROCESO</span>
-                <h2 className="text-3xl lg:text-5xl font-light" style={{color:"white"}}>Flujo <span className="font-semibold" style={{color:"#c4a478"}}>operativo</span></h2>
+                <h2 className="text-3xl lg:text-5xl font-light" style={{color:textPri}}>Flujo <span className="font-semibold" style={{color:"#c4a478"}}>operativo</span></h2>
               </div>
             </div>
 
@@ -2120,11 +2122,11 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
                 {n:"03",title:"Procesamiento",desc:"Alineación, nube densa, ortomosaico, MDS. Control de calidad y validación.",icon:<Ic.Cpu/>},
                 {n:"04",title:"Entrega",desc:"Publicación en plataforma con visualización interactiva, medición y descarga.",icon:<Ic.Eye/>},
               ].map((s,i)=>(
-                <div key={i} className="relative p-7 rounded-2xl transition-all" style={{background:"rgba(255,255,255,0.01)",border:"1px solid rgba(255,255,255,0.04)"}}>
+                <div key={i} className="relative p-7 rounded-2xl transition-all" style={{background:cardBg,border:`1px solid ${cardBorder}`}}>
                   <span className="dd-mono text-4xl font-light block mb-5" style={{color:"rgba(196,164,120,0.08)"}}>{s.n}</span>
                   <div className="mb-4" style={{color:"#c4a478"}}>{s.icon}</div>
-                  <h4 className="text-sm font-semibold mb-2" style={{color:"white"}}>{s.title}</h4>
-                  <p className="text-xs leading-relaxed" style={{color:"rgba(255,255,255,0.3)"}}>{s.desc}</p>
+                  <h4 className="text-sm font-semibold mb-2" style={{color:textPri}}>{s.title}</h4>
+                  <p className="text-xs leading-relaxed" style={{color:textFade}}>{s.desc}</p>
                   {i<3&&<div className="hidden lg:flex absolute top-1/2 -right-3 w-6 items-center justify-center" style={{color:"rgba(196,164,120,0.12)"}}><span className="text-lg">→</span></div>}
                 </div>
               ))}
@@ -2133,16 +2135,16 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
         </section>
 
         {/* ── CLIENTS ── */}
-        <section className="relative py-24" style={{background:"rgba(0,0,0,0.15)"}}>
+        <section className="relative py-24" style={{background: dm ? "rgba(0,0,0,0.15)" : "rgba(196,164,120,0.02)"}}>
           <div className="max-w-7xl mx-auto px-6 lg:px-12">
             <div className="flex items-center gap-6 mb-12">
               <div className="h-px flex-1" style={{background:"linear-gradient(90deg, transparent, rgba(196,164,120,0.1))"}}/>
-              <span className="dd-mono text-xs tracking-widest" style={{color:"rgba(255,255,255,0.2)"}}>SECTORES QUE CONFÍAN EN NOSOTROS</span>
+              <span className="dd-mono text-xs tracking-widest" style={{color: dm ? "rgba(255,255,255,0.2)" : "rgba(30,24,18,0.3)"}}>SECTORES QUE CONFÍAN EN NOSOTROS</span>
               <div className="h-px flex-1" style={{background:"linear-gradient(270deg, transparent, rgba(196,164,120,0.1))"}}/>
             </div>
             <div className="flex flex-wrap justify-center gap-x-16 gap-y-6">
               {["Ingeniería Civil","Arquitectura","Agro & Campo","Energía Renovable","Real Estate","Minería","Gobierno","Medio Ambiente"].map(s=>(
-                <span key={s} className="text-sm tracking-wide" style={{color:"rgba(255,255,255,0.2)"}}>{s}</span>
+                <span key={s} className="text-sm tracking-wide" style={{color: dm ? "rgba(255,255,255,0.2)" : textFade}}>{s}</span>
               ))}
             </div>
           </div>
@@ -2152,24 +2154,24 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
         <section className="relative py-32">
           <div className="max-w-3xl mx-auto px-6 text-center">
             <span className="dd-mono text-xs tracking-widest block mb-6" style={{color:"rgba(196,164,120,0.5)"}}>COMENZAR</span>
-            <h2 className="text-3xl lg:text-5xl font-light mb-5" style={{color:"white"}}>
+            <h2 className="text-3xl lg:text-5xl font-light mb-5" style={{color:textPri}}>
               ¿Necesitás <span className="font-semibold" style={{color:"#c4a478"}}>datos aéreos</span> para tu próximo proyecto?
             </h2>
-            <p className="text-sm leading-relaxed mb-12" style={{color:"rgba(255,255,255,0.3)"}}>
+            <p className="text-sm leading-relaxed mb-12" style={{color:textFade}}>
               Contanos los requerimientos técnicos de tu proyecto y te enviamos una propuesta detallada en menos de 24 horas.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button className="px-8 py-4 rounded-xl text-sm font-semibold tracking-wide dd-glow transition-all" style={{background:"#c4a478",color:"#0a0c10"}}>Solicitar presupuesto</button>
-              <button onClick={()=>onNavigate("login")} className="px-8 py-4 rounded-xl text-sm font-medium tracking-wide transition-all" style={{color:"rgba(255,255,255,0.4)",border:"1px solid rgba(255,255,255,0.06)"}} onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(196,164,120,0.15)"} onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.06)"}>Ya tengo cuenta</button>
+              <button onClick={()=>onNavigate("servicios")} className="px-8 py-4 rounded-xl text-sm font-semibold tracking-wide dd-glow transition-all" style={{background:"#c4a478",color:"#0a0c10"}}>Solicitar presupuesto</button>
+              <button onClick={()=>onNavigate("login")} className="px-8 py-4 rounded-xl text-sm font-medium tracking-wide transition-all" style={{color:textFade,border: dm ? "1px solid rgba(255,255,255,0.06)" : `1px solid ${accent}20`}} onMouseEnter={e=>e.currentTarget.style.borderColor=dm?"rgba(196,164,120,0.15)":`${accent}40`} onMouseLeave={e=>e.currentTarget.style.borderColor=dm?"rgba(255,255,255,0.06)":`${accent}20`}>Ya tengo cuenta</button>
             </div>
           </div>
         </section>
 
         {/* ── FOOTER ── */}
-        <footer className="border-t py-8 px-6 lg:px-12" style={{borderColor:"rgba(255,255,255,0.03)"}}>
+        <footer className="border-t py-8 px-6 lg:px-12" style={{borderColor: dm ? "rgba(255,255,255,0.03)" : "rgba(196,164,120,0.1)"}}>
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2"><span style={{color:"#c4a478"}}>◈</span><span className="text-xs font-medium tracking-wider" style={{color:"rgba(255,255,255,0.25)"}}>DESDEDRONE.AR</span></div>
-            <p className="dd-mono text-xs" style={{color:"rgba(255,255,255,0.12)"}}>© 2026 — Servicios aéreos con drones de precisión — Argentina</p>
+            <div className="flex items-center gap-2"><span style={{color:"#c4a478"}}>◈</span><span className="text-xs font-medium tracking-wider" style={{color: dm ? "rgba(255,255,255,0.25)" : textDim}}>DESDEDRONE.AR</span></div>
+            <p className="dd-mono text-xs" style={{color: dm ? "rgba(255,255,255,0.12)" : textDim}}>© 2026 — Servicios aéreos con drones de precisión — Argentina</p>
           </div>
         </footer>
       </div>
