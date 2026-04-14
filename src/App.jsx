@@ -136,43 +136,257 @@ function Counter({ end, suffix = "", prefix = "" }) {
 // ═══════════════════════════════════════════════════════════════════════
 // ORTHO VIEWER
 // ═══════════════════════════════════════════════════════════════════════
+const terrainH = (nx, ny) =>
+  Math.sin(nx * 1.3) * Math.cos(ny * 1.1) * 0.45 +
+  Math.sin(nx * 2.7 + 0.5) * Math.cos(ny * 2.3 + 0.3) * 0.3 +
+  Math.sin(nx * 5.1 + 1.2) * Math.cos(ny * 4.9 + 0.8) * 0.15 +
+  Math.sin(nx * 9.3 + 0.7) * Math.cos(ny * 8.7 + 1.4) * 0.1;
+
 function OrthoViewer() {
   const canvasRef = useRef(null);
   const [layer, setLayer] = useState("ortho");
   const [zoom, setZoom] = useState(1);
   const [measuring, setMeasuring] = useState(false);
   const [info, setInfo] = useState(null);
+  const [showPanel, setShowPanel] = useState(true);
+
   useEffect(() => {
     const cv = canvasRef.current; if (!cv) return;
     const ctx = cv.getContext("2d");
     const w = cv.width = cv.offsetWidth, h = cv.height = cv.offsetHeight;
+    ctx.clearRect(0, 0, w, h);
+
+    // Build shared terrain grid (scale factor S = 3px per sample)
+    const S = 3;
+    const cols = Math.ceil(w / S) + 1, rows = Math.ceil(h / S) + 1;
+    let mn = Infinity, mx = -Infinity;
+    const grid = Array.from({ length: rows }, (_, r) =>
+      Array.from({ length: cols }, (_, c) => {
+        const v = terrainH(c / cols * 6, r / rows * 6);
+        if (v < mn) mn = v; if (v > mx) mx = v;
+        return v;
+      })
+    );
+    const norm = grid.map(row => row.map(v => (v - mn) / (mx - mn)));
+    const getE = (x, y) => norm[Math.min(Math.floor(y / S), rows - 1)][Math.min(Math.floor(x / S), cols - 1)];
+
     if (layer === "ortho") {
-      for (let y=0;y<h;y+=4) for (let x=0;x<w;x+=4) { const n=Math.sin(x*0.02)*Math.cos(y*0.015)*30; const f=Math.sin((x+y)*0.005)>0; ctx.fillStyle=`rgb(${f?85+n:60+n},${f?140+n:100+n},${f?65+n:55+n})`; ctx.fillRect(x,y,4,4); }
-      ctx.strokeStyle="#8B7355";ctx.lineWidth=12;ctx.beginPath();ctx.moveTo(0,h*0.4);ctx.bezierCurveTo(w*0.3,h*0.35,w*0.6,h*0.55,w,h*0.5);ctx.stroke();
-      ctx.strokeStyle="rgba(255,255,255,0.08)";ctx.lineWidth=1;for(let x=0;x<w;x+=60){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}for(let y=0;y<h;y+=60){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+      // Agricultural field simulation with shared terrain for micro-relief
+      const img = ctx.createImageData(w, h);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+        const e = getE(x, y);
+        const fx = Math.floor(x / (w / 8)), fy = Math.floor(y / (h / 6));
+        const fs = (fx * 17 + fy * 11) % 5;
+        let r, g, b;
+        if (fs === 0) { r = 85 + e * 35; g = 145 + e * 40; b = 55 + e * 20; }       // cultivo verde
+        else if (fs === 1) { r = 165 + e * 30; g = 130 + e * 25; b = 75 + e * 20; } // cosechado marrón
+        else if (fs === 2) { r = 55 + e * 25; g = 105 + e * 35; b = 45 + e * 15; }  // cultivo denso
+        else if (fs === 3) { r = 185 + e * 20; g = 158 + e * 18; b = 108 + e * 15; }// suelo
+        else { r = 118 + e * 25; g = 162 + e * 28; b = 78 + e * 18; }               // pastizal
+        const i = (y * w + x) * 4;
+        img.data[i] = Math.min(255, r | 0); img.data[i + 1] = Math.min(255, g | 0); img.data[i + 2] = Math.min(255, b | 0); img.data[i + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      // Field borders
+      ctx.strokeStyle = "rgba(70,50,30,0.5)"; ctx.lineWidth = 1.5;
+      for (let i = 1; i < 8; i++) { ctx.beginPath(); ctx.moveTo(i * w / 8, 0); ctx.lineTo(i * w / 8, h); ctx.stroke(); }
+      for (let i = 1; i < 6; i++) { ctx.beginPath(); ctx.moveTo(0, i * h / 6); ctx.lineTo(w, i * h / 6); ctx.stroke(); }
+      // Roads
+      ctx.strokeStyle = "rgba(210,190,145,0.75)"; ctx.lineWidth = 5;
+      ctx.beginPath(); ctx.moveTo(0, h * 0.5); ctx.lineTo(w, h * 0.5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w * 0.375, 0); ctx.lineTo(w * 0.375, h); ctx.stroke();
+      // Subtle grid
+      ctx.strokeStyle = "rgba(255,255,255,0.04)"; ctx.lineWidth = 0.5;
+      for (let x = 0; x < w; x += 50) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+      for (let y = 0; y < h; y += 50) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+
     } else if (layer === "dsm") {
-      for(let y=0;y<h;y+=3)for(let x=0;x<w;x+=3){const e=Math.sin(x*0.01+1)*Math.cos(y*0.008)*0.5+0.5;ctx.fillStyle=`hsl(${(1-e)*240},70%,${40+e*30}%)`;ctx.fillRect(x,y,3,3);}
-    } else {
-      ctx.fillStyle="#080c12";ctx.fillRect(0,0,w,h);for(let i=0;i<8000;i++){const x=Math.random()*w,y=Math.random()*h,e=Math.sin(x*0.01)*Math.cos(y*0.008)*0.5+0.5;ctx.fillStyle=`hsla(${e*120},80%,60%,0.7)`;ctx.fillRect(x,y,1+Math.random()*2,1+Math.random()*2);}
+      // Rainbow heatmap: blue (low) → cyan → green → yellow → red (high)
+      const img = ctx.createImageData(w, h);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+        const e = getE(x, y);
+        let r, g, b;
+        if (e < 0.25) { const t = e / 0.25; r = 0; g = t * 255 | 0; b = 255; }
+        else if (e < 0.5) { const t = (e - 0.25) / 0.25; r = 0; g = 255; b = (255 - t * 255) | 0; }
+        else if (e < 0.75) { const t = (e - 0.5) / 0.25; r = t * 255 | 0; g = 255; b = 0; }
+        else { const t = (e - 0.75) / 0.25; r = 255; g = (255 - t * 255) | 0; b = 0; }
+        const i = (y * w + x) * 4; img.data[i] = r; img.data[i + 1] = g; img.data[i + 2] = b; img.data[i + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      ctx.strokeStyle = "rgba(0,0,0,0.1)"; ctx.lineWidth = 0.5;
+      for (let x = 0; x < w; x += 50) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+      for (let y = 0; y < h; y += 50) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+
+    } else if (layer === "pointcloud") {
+      // Deterministic point cloud colored by elevation, with painter's sort
+      ctx.fillStyle = "#050810"; ctx.fillRect(0, 0, w, h);
+      const pts = [];
+      const pw = 160, ph = 100;
+      for (let j = 0; j < ph; j++) for (let i = 0; i < pw; i++) {
+        const e = (terrainH(i / pw * 6, j / ph * 6) - mn) / (mx - mn);
+        pts.push({ x: (i / pw) * w + (e - 0.5) * 30, y: (j / ph) * h - e * 70, e });
+      }
+      pts.sort((a, b) => a.y - b.y);
+      for (const p of pts) {
+        const e = p.e;
+        let r, g, b;
+        if (e < 0.25) { const t = e / 0.25; r = 0; g = t * 150 | 0; b = (150 + t * 105) | 0; }
+        else if (e < 0.5) { const t = (e - 0.25) / 0.25; r = t * 80 | 0; g = (150 + t * 80) | 0; b = (255 - t * 200) | 0; }
+        else if (e < 0.75) { const t = (e - 0.5) / 0.25; r = (80 + t * 175) | 0; g = (230 - t * 30) | 0; b = Math.max(0, (55 - t * 55)) | 0; }
+        else { const t = (e - 0.75) / 0.25; r = 255; g = (200 + t * 55) | 0; b = (20 + t * 235) | 0; }
+        ctx.fillStyle = `rgba(${r},${g},${b},0.88)`;
+        ctx.fillRect(p.x, p.y, 1.5 + e * 1.5, 1.5 + e * 1.5);
+      }
+
+    } else if (layer === "nivelacion") {
+      // Topographic contour map: filled bands + marching-squares isolines
+      const LEVELS = 12;
+      const img = ctx.createImageData(w, h);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+        const e = getE(x, y);
+        let rv, gv, bv;
+        if (e < 0.2) { const t = e / 0.2; rv = 20 + t * 40; gv = 100 + t * 60; bv = 40 + t * 20; }
+        else if (e < 0.4) { const t = (e - 0.2) / 0.2; rv = 60 + t * 80; gv = 160 + t * 30; bv = 60 - t * 20; }
+        else if (e < 0.6) { const t = (e - 0.4) / 0.2; rv = 140 + t * 60; gv = 190 - t * 50; bv = 40 - t * 10; }
+        else if (e < 0.8) { const t = (e - 0.6) / 0.2; rv = 200 + t * 30; gv = 140 - t * 60; bv = 30 - t * 15; }
+        else { const t = (e - 0.8) / 0.2; rv = 230 + t * 25; gv = 80 + t * 80; bv = 15 + t * 155; }
+        const i = (y * w + x) * 4;
+        img.data[i] = Math.min(255, Math.max(0, rv | 0)); img.data[i + 1] = Math.min(255, Math.max(0, gv | 0));
+        img.data[i + 2] = Math.min(255, Math.max(0, bv | 0)); img.data[i + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      // Contour isolines via simplified marching squares
+      for (let lv = 1; lv < LEVELS; lv++) {
+        const t = lv / LEVELS;
+        const isMajor = lv % 3 === 0;
+        ctx.strokeStyle = isMajor ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.28)";
+        ctx.lineWidth = isMajor ? 1.5 : 0.7;
+        ctx.beginPath();
+        for (let r = 0; r < rows - 1; r++) for (let c = 0; c < cols - 1; c++) {
+          const v00 = norm[r][c], v10 = norm[r][c + 1], v01 = norm[r + 1][c], v11 = norm[r + 1][c + 1];
+          const x0 = c * S, y0 = r * S; const pts2 = [];
+          if ((v00 < t) !== (v10 < t)) { const f = (t - v00) / (v10 - v00); pts2.push({ x: x0 + f * S, y: y0 }); }
+          if ((v10 < t) !== (v11 < t)) { const f = (t - v10) / (v11 - v10); pts2.push({ x: x0 + S, y: y0 + f * S }); }
+          if ((v01 < t) !== (v11 < t)) { const f = (t - v01) / (v11 - v01); pts2.push({ x: x0 + f * S, y: y0 + S }); }
+          if ((v00 < t) !== (v01 < t)) { const f = (t - v00) / (v01 - v00); pts2.push({ x: x0, y: y0 + f * S }); }
+          if (pts2.length >= 2) { ctx.moveTo(pts2[0].x, pts2[0].y); ctx.lineTo(pts2[1].x, pts2[1].y); }
+        }
+        ctx.stroke();
+      }
+      // Elevation labels on major contours
+      ctx.font = "bold 9px monospace";
+      for (let lv = 3; lv < LEVELS; lv += 3) {
+        const elev = Math.round(118 + (lv / LEVELS) * 86);
+        const ty = Math.round((lv / LEVELS) * h);
+        ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillRect(6, ty - 9, 36, 12);
+        ctx.fillStyle = "rgba(255,255,255,0.8)"; ctx.fillText(`${elev}m`, 8, ty);
+      }
+      ctx.strokeStyle = "rgba(0,0,0,0.1)"; ctx.lineWidth = 0.5;
+      for (let x = 0; x < w; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+      for (let y = 0; y < h; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
     }
   }, [layer, zoom]);
-  const layers=[{id:"ortho",label:"Ortofoto",icon:<Ic.Map/>},{id:"dsm",label:"MDS / Elevación",icon:<Ic.Layers/>},{id:"pointcloud",label:"Nube de Puntos",icon:<Ic.Crosshair/>}];
+
+  const LAYERS = [
+    { id: "ortho",      label: "Ortofoto",      icon: <Ic.Map /> },
+    { id: "pointcloud", label: "Nube de Puntos", icon: <Ic.Crosshair /> },
+    { id: "dsm",        label: "Elevación DSM",  icon: <Ic.Layers /> },
+    { id: "nivelacion", label: "Mapa de Nivel",  icon: <Ic.Target /> },
+  ];
+
+  const META = {
+    ortho:      [["Resolución","1.8 cm/px"],["Fecha vuelo","2026-03-15"],["Área","243 ha"],["GSD","1.82 cm"],["Altitud","65 m AGL"],["Cámara","DJI Air 2S"],["Archivo","lote14_ortho.tif"],["Tamaño","2.4 GB"]],
+    pointcloud: [["Puntos","48.2 M"],["Densidad","12.4 pts/m²"],["Formato","LAS 1.4"],["Clases","Suelo · Veg. · Edificios"],["Archivo","lote14_cloud.laz"],["Tamaño","890 MB"]],
+    dsm:        [["Resolución","5 cm/px"],["Elev. mín","118.3 m"],["Elev. máx","203.7 m"],["Diferencia","85.4 m"],["Fecha","2026-03-15"],["Archivo","lote14_dsm.tif"],["Tamaño","320 MB"]],
+    nivelacion: [["Curvas","12 niveles"],["Equidistancia","1 m"],["Elev. mín","118 m"],["Elev. máx","204 m"],["Área cubierta","243 ha"],["Archivo","lote14_curvas.shp"],["Tamaño","4.2 MB"]],
+  };
+
+  const handleClick = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    const v = terrainH(x / rect.width * 6, y / rect.height * 6);
+    const elev = (118 + Math.min(1, Math.max(0, (v + 1) / 2)) * 86).toFixed(1);
+    setInfo({ lat: (-33.8 + y * 0.0001).toFixed(6), lng: (-60.5 + x * 0.0001).toFixed(6), elev });
+  };
+
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center gap-2 p-3 border-b" style={{borderColor:"rgba(255,255,255,0.06)",background:"rgba(0,0,0,0.2)"}}>
-        {layers.map(l=><button key={l.id} onClick={()=>setLayer(l.id)} className="flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all" style={{background:layer===l.id?"rgba(196,164,120,0.15)":"transparent",color:layer===l.id?"#c4a478":"rgba(255,255,255,0.45)",border:layer===l.id?"1px solid rgba(196,164,120,0.25)":"1px solid transparent"}}>{l.icon}{l.label}</button>)}
-        <div className="flex-1"/>
-        <button onClick={()=>setMeasuring(!measuring)} className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs" style={{background:measuring?"rgba(196,164,120,0.15)":"transparent",color:measuring?"#c4a478":"rgba(255,255,255,0.4)",border:measuring?"1px solid rgba(196,164,120,0.25)":"1px solid rgba(255,255,255,0.1)"}}><Ic.Ruler/> Medir</button>
-        <div className="flex items-center gap-1 ml-2">
-          <button onClick={()=>setZoom(z=>Math.max(0.5,z-0.25))} className="w-7 h-7 rounded flex items-center justify-center text-sm" style={{background:"rgba(255,255,255,0.05)",color:"rgba(255,255,255,0.5)"}}>−</button>
-          <span className="text-xs w-12 text-center" style={{color:"rgba(255,255,255,0.4)"}}>{Math.round(zoom*100)}%</span>
-          <button onClick={()=>setZoom(z=>Math.min(4,z+0.25))} className="w-7 h-7 rounded flex items-center justify-center text-sm" style={{background:"rgba(255,255,255,0.05)",color:"rgba(255,255,255,0.5)"}}>+</button>
+      {/* Toolbar */}
+      <div className="flex items-center gap-1 p-2.5 border-b flex-wrap" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(0,0,0,0.2)" }}>
+        {LAYERS.map(l => (
+          <button key={l.id} onClick={() => setLayer(l.id)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+            style={{ background: layer === l.id ? "rgba(196,164,120,0.15)" : "transparent", color: layer === l.id ? "#c4a478" : "rgba(255,255,255,0.45)", border: layer === l.id ? "1px solid rgba(196,164,120,0.25)" : "1px solid transparent" }}>
+            {l.icon}{l.label}
+          </button>
+        ))}
+        <div className="flex-1" />
+        <button onClick={() => setMeasuring(!measuring)} className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs"
+          style={{ background: measuring ? "rgba(196,164,120,0.12)" : "transparent", color: measuring ? "#c4a478" : "rgba(255,255,255,0.4)", border: measuring ? "1px solid rgba(196,164,120,0.2)" : "1px solid rgba(255,255,255,0.08)" }}>
+          <Ic.Ruler /> Medir
+        </button>
+        <button onClick={() => setShowPanel(p => !p)} className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs"
+          style={{ background: showPanel ? "rgba(196,164,120,0.08)" : "transparent", color: showPanel ? "#c4a478" : "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <Ic.Eye /> Info
+        </button>
+        <div className="flex items-center gap-1 ml-1">
+          <button onClick={() => setZoom(z => Math.max(0.5, z - 0.25))} className="w-7 h-7 rounded flex items-center justify-center text-sm" style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)" }}>−</button>
+          <span className="text-xs w-12 text-center" style={{ color: "rgba(255,255,255,0.4)" }}>{Math.round(zoom * 100)}%</span>
+          <button onClick={() => setZoom(z => Math.min(4, z + 0.25))} className="w-7 h-7 rounded flex items-center justify-center text-sm" style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)" }}>+</button>
         </div>
+        <button className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs ml-1" style={{ background: "rgba(196,164,120,0.08)", color: "#c4a478", border: "1px solid rgba(196,164,120,0.15)" }}>
+          <Ic.Download /> Exportar
+        </button>
       </div>
-      <div className="flex-1 relative overflow-hidden cursor-crosshair" onClick={e=>{const r=e.currentTarget.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top;setInfo({lat:(-33.8+y*0.0001).toFixed(6),lng:(-60.5+x*0.0001).toFixed(6),elev:(120+Math.sin(x*0.01)*15).toFixed(1)});}}>
-        <canvas ref={canvasRef} className="w-full h-full" style={{transform:`scale(${zoom})`,transformOrigin:"center"}}/>
-        {info&&<div className="absolute bottom-3 left-3 px-3 py-2 rounded-lg text-xs font-mono" style={{background:"rgba(0,0,0,0.85)",color:"rgba(255,255,255,0.75)",backdropFilter:"blur(12px)",border:"1px solid rgba(255,255,255,0.08)"}}><span style={{color:"#c4a478"}}>LAT</span> {info.lat} &nbsp;<span style={{color:"#c4a478"}}>LNG</span> {info.lng} &nbsp;<span style={{color:"#d4a053"}}>ELEV</span> {info.elev}m</div>}
-        {measuring&&<div className="absolute top-3 left-3 px-3 py-2 rounded-lg text-xs" style={{background:"rgba(196,164,120,0.08)",color:"#c4a478",border:"1px solid rgba(196,164,120,0.15)"}}>Click dos puntos en el mapa para medir distancia</div>}
+
+      {/* Canvas area + metadata panel */}
+      <div className="flex flex-1 overflow-hidden">
+        <div className="flex-1 relative overflow-hidden cursor-crosshair" onClick={handleClick}>
+          <canvas ref={canvasRef} className="w-full h-full" style={{ transform: `scale(${zoom})`, transformOrigin: "center" }} />
+          {info && (
+            <div className="absolute bottom-3 left-3 px-3 py-2 rounded-lg text-xs font-mono" style={{ background: "rgba(0,0,0,0.85)", color: "rgba(255,255,255,0.75)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.08)" }}>
+              <span style={{ color: "#c4a478" }}>LAT</span> {info.lat} &nbsp;
+              <span style={{ color: "#c4a478" }}>LNG</span> {info.lng} &nbsp;
+              <span style={{ color: "#d4a053" }}>ELEV</span> {info.elev}m
+            </div>
+          )}
+          {measuring && (
+            <div className="absolute top-3 left-3 px-3 py-2 rounded-lg text-xs" style={{ background: "rgba(196,164,120,0.08)", color: "#c4a478", border: "1px solid rgba(196,164,120,0.15)" }}>
+              Modo medición — click dos puntos para calcular distancia
+            </div>
+          )}
+          {/* Color scale for elevation layers */}
+          {(layer === "dsm" || layer === "nivelacion") && (
+            <div className="absolute bottom-3 right-3 flex flex-col items-center gap-1 p-2 rounded-lg" style={{ background: "rgba(0,0,0,0.82)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(12px)" }}>
+              <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>204m</span>
+              <div style={{ width: 10, height: 72, background: layer === "dsm" ? "linear-gradient(to bottom,#ff0000,#ffff00,#00ff00,#00ffff,#0000ff)" : "linear-gradient(to bottom,#e8b870,#c87844,#8aba6a,#3e7028)", borderRadius: 4 }} />
+              <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>118m</span>
+            </div>
+          )}
+        </div>
+
+        {/* Metadata panel */}
+        {showPanel && (
+          <div className="w-52 border-l flex flex-col" style={{ borderColor: "rgba(255,255,255,0.05)", background: "rgba(0,0,0,0.18)" }}>
+            <div className="p-3 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+              <div className="text-xs font-semibold tracking-wide" style={{ color: "rgba(255,255,255,0.7)" }}>Metadatos</div>
+              <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.3)" }}>{LAYERS.find(l => l.id === layer)?.label}</div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
+              {META[layer].map(([k, v]) => (
+                <div key={k}>
+                  <div style={{ color: "rgba(255,255,255,0.22)", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.06em" }}>{k}</div>
+                  <div className="text-xs font-mono mt-0.5" style={{ color: "rgba(255,255,255,0.7)" }}>{v}</div>
+                </div>
+              ))}
+            </div>
+            <div className="p-3 border-t" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+              <button className="w-full py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5" style={{ background: "rgba(196,164,120,0.08)", color: "#c4a478", border: "1px solid rgba(196,164,120,0.15)" }}>
+                <Ic.Download /> Descargar archivo
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
