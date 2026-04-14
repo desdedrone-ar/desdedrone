@@ -566,6 +566,296 @@ function Login({ onLogin, onBack }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+// CASOS DE USO PAGE
+// ═══════════════════════════════════════════════════════════════════════
+function CasosDeUsoPage({ onBack, onContacto }) {
+  const [activeCaso, setActiveCaso] = useState(null);
+
+  const casos = [
+    {
+      id: "obra-civil",
+      sector: "Constructoras · Desarrolladoras",
+      tag: "Seguimiento de Obra",
+      title: "Torres residenciales en ejecución",
+      problem: "Los inversores en pozo necesitan ver el avance real sin desplazarse a obra. Los jefes de obra necesitan registro fechado de cada etapa para control de subcontratistas.",
+      solution: "Vuelos quincenales con fotogrametría y video 4K. Ortomosaico georeferenciado + comparativa temporal entre etapas. Material listo para sala de ventas.",
+      deliverables: ["Ortomosaico GeoTIFF por etapa", "Video 4K editado con timestamps", "Comparativa multi-vuelo superpuesta", "Reporte de avance PDF para inversores"],
+      metrics: [["Vuelos realizados", "18"], ["Etapas documentadas", "6"], ["Superficie relevada", "4.200 m²"], ["Precisión GSD", "±2 cm"]],
+      highlight: "Obra Civil Barrio Los Álamos — Etapa 2",
+      color: "#c4a478",
+      icon: <Ic.Building />,
+    },
+    {
+      id: "inspeccion-termica",
+      sector: "Energía Renovable · Infraestructura",
+      tag: "Inspección Termográfica",
+      title: "Parques solares y eólicos",
+      problem: "Las celdas fotovoltaicas con fallas (hot spots, bypass shunt) no son visibles a simple vista. Detectarlas manualmente requiere días de trabajo en campo.",
+      solution: "Vuelo combinado RGB + sensor térmico FLIR radiométrico. Mapa de temperatura de cada panel, identificación automática de anomalías y coordenadas GPS exactas.",
+      deliverables: ["Ortomosaico térmico radiométrico", "Mapa de anomalías con coordenadas GPS", "Informe técnico de fallas clasificadas", "Archivo KMZ para geolocalización"],
+      metrics: [["Paneles inspeccionados", "3.200"], ["Anomalías detectadas", "47"], ["Superficie cubierta", "8 ha"], ["Tiempo de vuelo", "2 hs"]],
+      highlight: "Inspección Paneles Solares — Parque Eólico Sur",
+      color: "#d4a053",
+      icon: <Ic.Signal />,
+    },
+    {
+      id: "movimiento-suelos",
+      sector: "Ingeniería Civil · Vialidad",
+      tag: "Fotogrametría · Volúmenes",
+      title: "Excavación y movimiento de suelos",
+      problem: "Cuantificar volúmenes excavados requiere topógrafos manuales, es lento y costoso. Sin datos precisos, los presupuestos de relleno y retiro de material tienen grandes márgenes de error.",
+      solution: "Vuelos de fotogrametría con GCPs (puntos de control GPS). Nube de puntos densa + MDS para cálculo exacto de volúmenes entre vuelos. Comparativa antes/después.",
+      deliverables: ["Nube de puntos LAS 1.4 clasificada", "MDS y MDT en GeoTIFF", "Cálculo de volúmenes por polígono", "Curvas de nivel con equidistancia 0.5 m"],
+      metrics: [["Área relevada", "243 ha"], ["Puntos en nube", "48 M pts"], ["Volumen calculado", "12.400 m³"], ["Precisión absoluta", "±3 cm"]],
+      highlight: "Relevamiento Campo Lote 14 — Pergamino",
+      color: "#8fb4c4",
+      icon: <Ic.Layers />,
+    },
+    {
+      id: "real-estate",
+      sector: "Real Estate · Marketing",
+      tag: "Video FPV · Aéreo",
+      title: "Diferenciación en pozo y preventa",
+      problem: "Mostrar el potencial de un proyecto en construcción es difícil con renders estáticos. Los compradores necesitan sentir el producto antes de que exista.",
+      solution: "Video FPV inmersivo + aéreo 4K con estabilización de 3 ejes. Edición profesional con color grading, música y narración. Material listo para redes y sala de ventas.",
+      deliverables: ["Video FPV + aéreo editado 4K", "Corte de 60\" para redes sociales", "Fotos aéreas alta resolución", "Material con marca de agua para pre-lanzamiento"],
+      metrics: [["Duración producción", "2-3 días"], ["Formatos entregados", "4"], ["Resolución", "4K / 60fps"], ["Color grading", "D-Log / LUT custom"]],
+      highlight: "Producción aérea para desarrolladoras CABA",
+      color: "#b89878",
+      icon: <Ic.Camera />,
+    },
+    {
+      id: "infraestructura",
+      sector: "Municipios · Gobierno · Vialidad",
+      tag: "Monitoreo de Infraestructura",
+      title: "Puentes, rutas y obra pública",
+      problem: "Inspeccionar puentes, viaductos y pavimentos manualmente es peligroso y lleva semanas. Las grietas, deterioros y patologías en zonas de difícil acceso quedan sin registrar.",
+      solution: "Vuelos de inspección con cámara 4K + zoom óptico 28x. Geolocalización de cada patología detectada. Informe técnico con evidencia fotográfica y mapa de hallazgos.",
+      deliverables: ["Registro fotográfico georeferenciado", "Mapa de patologías con severidad", "Informe técnico con evidencia visual", "Seguimiento temporal de deterioro"],
+      metrics: [["Km inspeccionados", "38 km"], ["Puntos registrados", "124"], ["Tiempo vs. método manual", "–80%"], ["Costo operativo", "–65%"]],
+      highlight: "Inspección de infraestructura vial — GBA",
+      color: "#a0b890",
+      icon: <Ic.Scan />,
+    },
+  ];
+
+  const featuredCaso = casos[0];
+  const catColor = { "Constructoras · Desarrolladoras": "#c4a478", "Energía Renovable · Infraestructura": "#d4a053", "Ingeniería Civil · Vialidad": "#8fb4c4", "Real Estate · Marketing": "#b89878", "Municipios · Gobierno · Vialidad": "#a0b890" };
+
+  return (
+    <div className="min-h-screen" style={{ background: "#0a0c10" }}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+      <style>{`.dd-body{font-family:'DM Sans',sans-serif}.dd-mono{font-family:'IBM Plex Mono',monospace}`}</style>
+
+      <div className="dd-body">
+        {/* Nav */}
+        <nav className="flex items-center justify-between px-6 lg:px-12 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl" style={{ color: "#c4a478" }}>◈</span>
+            <span className="text-sm font-semibold tracking-wider" style={{ color: "white" }}>DESDEDRONE<span style={{ color: "#c4a478" }}>.AR</span></span>
+          </div>
+          <button onClick={onBack} className="flex items-center gap-2 text-xs tracking-wider" style={{ color: "rgba(255,255,255,0.35)" }}
+            onMouseEnter={e => e.target.style.color = "#c4a478"} onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.35)"}>
+            ← Volver al inicio
+          </button>
+        </nav>
+
+        <div className="max-w-6xl mx-auto px-6 lg:px-12 py-20">
+
+          {/* Header */}
+          <div className="mb-20">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-px w-12" style={{ background: "rgba(196,164,120,0.3)" }} />
+              <span className="dd-mono text-xs tracking-widest" style={{ color: "rgba(196,164,120,0.5)" }}>CASOS DE USO</span>
+            </div>
+            <h1 className="text-3xl lg:text-5xl font-light mb-3" style={{ color: "white" }}>
+              Soluciones para cada <span className="font-semibold" style={{ color: "#c4a478" }}>industria</span>
+            </h1>
+            <p className="text-sm leading-relaxed max-w-xl" style={{ color: "rgba(255,255,255,0.35)" }}>
+              Proyectos reales de fotogrametría, inspección y producción aérea en Argentina. Datos concretos de cada aplicación para que puedas evaluar el retorno en tu caso específico.
+            </p>
+          </div>
+
+          {/* Featured — Constructoras */}
+          <div className="mb-8 p-8 lg:p-10 rounded-3xl relative overflow-hidden" style={{ background: "rgba(196,164,120,0.03)", border: "1px solid rgba(196,164,120,0.1)" }}>
+            <div className="absolute top-0 right-0 w-96 h-96 opacity-5" style={{ background: "radial-gradient(circle, #c4a478, transparent 70%)" }} />
+            <div className="relative">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(196,164,120,0.08)", border: "1px solid rgba(196,164,120,0.15)", color: "#c4a478" }}><Ic.Building /></div>
+                <div>
+                  <span className="dd-mono text-xs tracking-widest block" style={{ color: "rgba(196,164,120,0.6)" }}>CASO DESTACADO</span>
+                  <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{featuredCaso.sector}</span>
+                </div>
+                <div className="ml-auto hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ background: "rgba(196,164,120,0.06)", border: "1px solid rgba(196,164,120,0.1)" }}>
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#c4a478" }} />
+                  <span className="dd-mono text-xs" style={{ color: "#c4a478" }}>En producción</span>
+                </div>
+              </div>
+
+              <div className="grid lg:grid-cols-2 gap-10">
+                <div>
+                  <h2 className="text-2xl lg:text-3xl font-semibold mb-4" style={{ color: "white" }}>{featuredCaso.title}</h2>
+                  <div className="mb-6">
+                    <div className="dd-mono text-xs tracking-widest mb-2" style={{ color: "rgba(255,255,255,0.2)" }}>PROBLEMA</div>
+                    <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{featuredCaso.problem}</p>
+                  </div>
+                  <div className="mb-6">
+                    <div className="dd-mono text-xs tracking-widest mb-2" style={{ color: "rgba(255,255,255,0.2)" }}>SOLUCIÓN</div>
+                    <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{featuredCaso.solution}</p>
+                  </div>
+                  <div>
+                    <div className="dd-mono text-xs tracking-widest mb-3" style={{ color: "rgba(255,255,255,0.2)" }}>ENTREGABLES</div>
+                    <div className="space-y-2">
+                      {featuredCaso.deliverables.map((d, i) => (
+                        <div key={i} className="flex items-center gap-2.5">
+                          <div className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: "#c4a478" }} />
+                          <span className="text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>{d}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    {featuredCaso.metrics.map(([label, value], i) => (
+                      <div key={i} className="p-4 rounded-2xl" style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                        <div className="text-xl font-semibold dd-mono mb-1" style={{ color: "#c4a478" }}>{value}</div>
+                        <div className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{label}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="p-4 rounded-2xl flex items-start gap-3" style={{ background: "rgba(196,164,120,0.03)", border: "1px solid rgba(196,164,120,0.08)" }}>
+                    <Ic.Map />
+                    <div>
+                      <div className="text-xs font-medium mb-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>Proyecto de referencia</div>
+                      <div className="text-xs dd-mono" style={{ color: "rgba(196,164,120,0.6)" }}>{featuredCaso.highlight}</div>
+                    </div>
+                  </div>
+
+                  <button onClick={onContacto} className="w-full py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all flex items-center justify-center gap-2" style={{ background: "#c4a478", color: "#0a0c10" }}>
+                    Solicitar propuesta para mi obra <Ic.Arrow />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Grid de casos */}
+          <div className="grid md:grid-cols-2 gap-4 mb-16">
+            {casos.slice(1).map((caso, i) => (
+              <div key={caso.id}
+                className="p-7 rounded-2xl cursor-pointer transition-all"
+                style={{
+                  background: activeCaso === caso.id ? "rgba(255,255,255,0.025)" : "rgba(255,255,255,0.01)",
+                  border: `1px solid ${activeCaso === caso.id ? `${caso.color}20` : "rgba(255,255,255,0.04)"}`,
+                }}
+                onMouseEnter={() => setActiveCaso(caso.id)}
+                onMouseLeave={() => setActiveCaso(null)}
+              >
+                <div className="flex items-start gap-4 mb-5">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${caso.color}0c`, border: `1px solid ${caso.color}18`, color: caso.color }}>{caso.icon}</div>
+                  <div>
+                    <span className="dd-mono text-xs block mb-0.5" style={{ color: caso.color }}>{caso.tag}</span>
+                    <h3 className="text-base font-semibold" style={{ color: "white" }}>{caso.title}</h3>
+                    <span className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>{caso.sector}</span>
+                  </div>
+                </div>
+
+                <p className="text-sm leading-relaxed mb-5" style={{ color: "rgba(255,255,255,0.38)" }}>{caso.problem}</p>
+
+                <div className="grid grid-cols-2 gap-2 mb-5">
+                  {caso.metrics.slice(0, 4).map(([label, value], j) => (
+                    <div key={j} className="p-3 rounded-xl" style={{ background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.03)" }}>
+                      <div className="text-sm font-semibold dd-mono" style={{ color: caso.color }}>{value}</div>
+                      <div style={{ color: "rgba(255,255,255,0.25)", fontSize: "11px" }}>{label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-1.5">
+                  {caso.deliverables.slice(0, 3).map((d, j) => (
+                    <div key={j} className="flex items-center gap-2">
+                      <div className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: caso.color }} />
+                      <span style={{ color: "rgba(255,255,255,0.35)", fontSize: "12px" }}>{d}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tabla comparativa sectores */}
+          <div className="mb-16">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="h-px w-8" style={{ background: "rgba(196,164,120,0.2)" }} />
+              <span className="dd-mono text-xs tracking-widest" style={{ color: "rgba(196,164,120,0.4)" }}>CUADRO COMPARATIVO POR SECTOR</span>
+            </div>
+            <div className="overflow-x-auto rounded-2xl" style={{ border: "1px solid rgba(255,255,255,0.04)" }}>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr style={{ background: "rgba(255,255,255,0.015)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    {["Sector", "Tipo de vuelo", "Entregable principal", "Frecuencia típica", "Valor clave"].map(h => (
+                      <th key={h} className="text-left px-5 py-3.5 dd-mono text-xs tracking-wider" style={{ color: "rgba(255,255,255,0.25)", fontWeight: 400 }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["Constructoras", "Fotogrametría", "Ortomosaico + Video 4K", "Quincenal / mensual", "Reporte inversores"],
+                    ["Energía Renovable", "Termografía RGB", "Mapa de anomalías", "Anual / post-tormenta", "Reducción de pérdidas"],
+                    ["Ingeniería Civil", "Fotogrametría GCPs", "Nube de puntos + MDS", "Por etapa de obra", "Cálculo de volúmenes"],
+                    ["Real Estate", "Video FPV + aéreo", "Video editado 4K", "Por proyecto", "Material de ventas"],
+                    ["Gobierno / Vialidad", "Inspección + zoom", "Mapa de patologías", "Semestral / anual", "Ahorro en inspección"],
+                  ].map(([sector, ...rest], i) => (
+                    <tr key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.025)", background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.005)" }}>
+                      <td className="px-5 py-3.5 font-medium" style={{ color: "rgba(255,255,255,0.7)" }}>{sector}</td>
+                      {rest.map((cell, j) => (
+                        <td key={j} className="px-5 py-3.5 dd-mono text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{cell}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="p-10 rounded-3xl text-center" style={{ background: "rgba(196,164,120,0.02)", border: "1px solid rgba(196,164,120,0.07)" }}>
+            <span className="dd-mono text-xs tracking-widest block mb-4" style={{ color: "rgba(196,164,120,0.4)" }}>SIGUIENTE PASO</span>
+            <h2 className="text-2xl lg:text-3xl font-light mb-3" style={{ color: "white" }}>
+              ¿Tu proyecto encaja en alguno de estos <span className="font-semibold" style={{ color: "#c4a478" }}>casos</span>?
+            </h2>
+            <p className="text-sm leading-relaxed max-w-lg mx-auto mb-8" style={{ color: "rgba(255,255,255,0.3)" }}>
+              Contanos qué obra o proyecto tenés en mente. En menos de 24 hs te enviamos una propuesta con frecuencia de vuelo, entregables y precio por etapa.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <button onClick={onContacto} className="px-8 py-4 rounded-xl text-sm font-semibold tracking-wide flex items-center gap-2 transition-all" style={{ background: "#c4a478", color: "#0a0c10" }}>
+                Solicitar presupuesto <Ic.Arrow />
+              </button>
+              <button onClick={onBack} className="px-8 py-4 rounded-xl text-sm font-medium tracking-wide transition-all" style={{ color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.06)" }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(196,164,120,0.15)"} onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"}>
+                Ver plataforma demo
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Footer */}
+        <footer className="border-t py-8 px-6 lg:px-12" style={{ borderColor: "rgba(255,255,255,0.03)" }}>
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2"><span style={{ color: "#c4a478" }}>◈</span><span className="text-xs font-medium tracking-wider" style={{ color: "rgba(255,255,255,0.25)" }}>DESDEDRONE.AR</span></div>
+            <p className="dd-mono text-xs" style={{ color: "rgba(255,255,255,0.12)" }}>© 2026 — Servicios aéreos con drones de precisión — Argentina</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // STACK TECNOLÓGICO PAGE
 // ═══════════════════════════════════════════════════════════════════════
 function StackPage({ onBack }) {
@@ -806,7 +1096,7 @@ function Landing({ onNavigate }) {
               <span className="text-sm font-semibold tracking-wider" style={{color:"white"}}>DESDEDRONE<span style={{color:"#c4a478"}}>.AR</span></span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              {[{t:"Servicios",v:null},{t:"Plataforma",v:"stack"},{t:"Proceso",v:null},{t:"Contacto",v:null}].map(item=><a key={item.t} href="#" onClick={e=>{e.preventDefault();if(item.v)onNavigate(item.v);}} className="text-xs tracking-wider transition-colors" style={{color:"rgba(255,255,255,0.35)"}} onMouseEnter={e=>e.target.style.color="#c4a478"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.35)"}>{item.t}</a>)}
+              {[{t:"Servicios",v:null},{t:"Casos de Uso",v:"casos"},{t:"Plataforma",v:"stack"},{t:"Proceso",v:null},{t:"Contacto",v:null}].map(item=><a key={item.t} href="#" onClick={e=>{e.preventDefault();if(item.v)onNavigate(item.v);}} className="text-xs tracking-wider transition-colors" style={{color:"rgba(255,255,255,0.35)"}} onMouseEnter={e=>e.target.style.color="#c4a478"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.35)"}>{item.t}</a>)}
             </div>
             <button onClick={()=>onNavigate("login")} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium tracking-wider transition-all dd-glow" style={{border:"1px solid rgba(196,164,120,0.25)",color:"#c4a478"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(196,164,120,0.06)"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Portal Clientes</button>
           </div>
@@ -929,10 +1219,11 @@ function Landing({ onNavigate }) {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
               {[
                 { onClick:()=>onNavigate("ortho"), icon:<Ic.Map/>, tag:"Visor Geoespacial", title:"Ortomosaicos · MDS · Nube de Puntos", desc:"Visualizá capas georreferenciadas, medí distancias y áreas, y analizá modelos de elevación directamente desde el browser.", color:"#c4a478" },
                 { onClick:()=>onNavigate("video"), icon:<Ic.Video/>, tag:"Sistema de Revisión", title:"Video aéreo · Observaciones · Descarga", desc:"Revisá el material editado con observaciones timestamped, descargá muestras con marca de agua y aprobá entregas.", color:"#8fb4c4" },
+                { onClick:()=>onNavigate("casos"), icon:<Ic.Building/>, tag:"Casos de Uso", title:"Constructoras · Energía · Ingeniería Civil", desc:"Casos reales de fotogrametría, inspección y producción aérea. Métricas concretas para evaluar el retorno en tu proyecto.", color:"#b89878" },
               ].map((c,i)=>(
                 <div key={i} onClick={c.onClick} className="group relative p-8 lg:p-10 rounded-2xl cursor-pointer transition-all duration-500 dd-glow overflow-hidden" style={{background:"rgba(255,255,255,0.01)",border:"1px solid rgba(255,255,255,0.04)",minHeight:"280px"}}
                   onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(196,164,120,0.15)"} onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.04)"}>
@@ -1033,7 +1324,8 @@ export default function App() {
 
   if (view === "landing") return <Landing onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}}/>;
   if (view === "login") return <Login onLogin={()=>setView("dashboard")} onBack={()=>setView("landing")}/>;
-  if (view === "stack") return <StackPage onBack={()=>setView("landing")}/>;;
+  if (view === "stack") return <StackPage onBack={()=>setView("landing")}/>;
+  if (view === "casos") return <CasosDeUsoPage onBack={()=>setView("landing")} onContacto={()=>setView("landing")}/>;;
 
   // Dashboard shell
   const accent = "#c4a478";
