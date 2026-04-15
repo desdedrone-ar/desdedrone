@@ -1848,14 +1848,15 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
   const bg       = dm ? "#0a0c10" : "#f5f2ee";
   const navBg    = dm ? "rgba(10,12,16,0.92)" : "rgba(245,242,238,0.92)";
   const navBorder= dm ? "rgba(196,164,120,0.06)" : "rgba(196,164,120,0.2)";
-  const textPri  = dm ? "white" : "#1a1612";
-  const textMed  = dm ? "rgba(255,255,255,0.55)" : "rgba(30,24,18,0.65)";
-  const textFade = dm ? "rgba(255,255,255,0.35)" : "rgba(30,24,18,0.45)";
-  const textFade2= dm ? "rgba(255,255,255,0.45)" : "rgba(30,24,18,0.55)";
-  const textDim  = dm ? "rgba(255,255,255,0.25)" : "rgba(30,24,18,0.3)";
+  const textPri  = dm ? "white" : "#0f0c08";
+  const textMed  = dm ? "rgba(255,255,255,0.55)" : "rgba(20,14,8,0.82)";
+  const textFade = dm ? "rgba(255,255,255,0.35)" : "rgba(20,14,8,0.7)";
+  const textFade2= dm ? "rgba(255,255,255,0.45)" : "rgba(20,14,8,0.75)";
+  const textDim  = dm ? "rgba(255,255,255,0.25)" : "rgba(20,14,8,0.55)";
   const accent   = "#c4a478";
-  const cardBg   = dm ? "rgba(255,255,255,0.01)" : "rgba(255,255,255,0.7)";
-  const cardBorder= dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.15)";
+  const accentStrong = dm ? "#c4a478" : "#8a6a3e";
+  const cardBg   = dm ? "rgba(255,255,255,0.01)" : "rgba(255,255,255,0.9)";
+  const cardBorder= dm ? "rgba(255,255,255,0.04)" : "rgba(138,106,62,0.25)";
 
   const NAV_ITEMS = [{t:"Servicios",v:"servicios"},{t:"Casos de Uso",v:"casos"},{t:"Presupuesto",v:"presupuesto"},{t:"Plataforma",v:"stack"},{t:"Contacto",v:null}];
 
@@ -1863,7 +1864,12 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
     <div className="min-h-screen" style={{ background: bg, transition: "background 0.3s" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
       <style>{`
-        .dd-body { font-family: 'DM Sans', sans-serif; }
+        .dd-body { font-family: 'DM Sans', sans-serif; font-size: 17px; line-height: 1.55; }
+        .dd-body .text-xs { font-size: 13px; }
+        .dd-body .text-sm { font-size: 15.5px; }
+        .dd-body .text-base { font-size: 17.5px; }
+        .dd-body .text-lg { font-size: 19.5px; }
+        .dd-body .text-xl { font-size: 22px; }
         .dd-mono { font-family: 'IBM Plex Mono', monospace; }
         .dd-fade-up { opacity: 0; transform: translateY(30px); animation: ddFadeUp 0.8s ease forwards; }
         .dd-fade-up-d1 { animation-delay: 0.1s; }
@@ -1980,7 +1986,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
               <h1 className="dd-fade-up dd-fade-up-d1 text-4xl lg:text-7xl font-light leading-tight tracking-tight mb-3" style={{color: dm ? "white" : textPri}}>
                 Visión aérea para
               </h1>
-              <h1 className="dd-fade-up dd-fade-up-d2 text-4xl lg:text-7xl font-semibold leading-tight tracking-tight mb-10" style={{color:"#c4a478"}}>
+              <h1 className="dd-fade-up dd-fade-up-d2 text-4xl lg:text-7xl font-semibold leading-tight tracking-tight mb-10" style={{color:accentStrong}}>
                 decisiones estratégicas
               </h1>
 
@@ -2017,7 +2023,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
               ].map((m,i)=>(
                 <div key={i} className="text-right">
                   <div className="flex items-baseline justify-end gap-1">
-                    <span className="text-3xl font-light dd-mono" style={{color:"#c4a478"}}>{m.n}</span>
+                    <span className="text-3xl font-light dd-mono" style={{color:accentStrong}}>{m.n}</span>
                     <span className="text-xs dd-mono" style={{color:"rgba(196,164,120,0.5)"}}>{m.u}</span>
                   </div>
                   <span className="text-xs tracking-wider" style={{color: dm ? "rgba(255,255,255,0.2)" : textFade}}>{m.l}</span>
@@ -2038,7 +2044,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
             <div className="flex items-end justify-between mb-20">
               <div>
                 <span className="dd-mono text-xs tracking-widest block mb-3" style={{color:"rgba(196,164,120,0.5)"}}>SERVICIOS</span>
-                <h2 className="text-3xl lg:text-5xl font-light" style={{color:"white"}}>Soluciones de <span className="font-semibold" style={{color:"#c4a478"}}>precisión</span></h2>
+                <h2 className="text-3xl lg:text-5xl font-light" style={{color:textPri}}>Soluciones de <span className="font-semibold" style={{color:accentStrong}}>precisión</span></h2>
               </div>
               <div className="hidden lg:block h-px w-1/3" style={{background:"linear-gradient(270deg, rgba(196,164,120,0.15), transparent)"}}/>
             </div>
@@ -2075,7 +2081,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
           <div className="max-w-7xl mx-auto px-6 lg:px-12">
             <div className="text-center mb-20">
               <span className="dd-mono text-xs tracking-widest block mb-3" style={{color:"rgba(196,164,120,0.5)"}}>PLATAFORMA</span>
-              <h2 className="text-3xl lg:text-5xl font-light mb-4" style={{color:textPri}}>Plataforma de <span className="font-semibold" style={{color:"#c4a478"}}>entregables</span></h2>
+              <h2 className="text-3xl lg:text-5xl font-light mb-4" style={{color:textPri}}>Plataforma de <span className="font-semibold" style={{color:accentStrong}}>entregables</span></h2>
               <p className="text-sm max-w-lg mx-auto leading-relaxed" style={{color:textFade}}>
                 Centralizá mapas, mediciones, videos y comentarios en un entorno único de visualización.
               </p>
@@ -2111,7 +2117,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
             <div className="flex items-end justify-between mb-20">
               <div>
                 <span className="dd-mono text-xs tracking-widest block mb-3" style={{color:"rgba(196,164,120,0.5)"}}>PROCESO</span>
-                <h2 className="text-3xl lg:text-5xl font-light" style={{color:textPri}}>Flujo <span className="font-semibold" style={{color:"#c4a478"}}>operativo</span></h2>
+                <h2 className="text-3xl lg:text-5xl font-light" style={{color:textPri}}>Flujo <span className="font-semibold" style={{color:accentStrong}}>operativo</span></h2>
               </div>
             </div>
 
@@ -2155,7 +2161,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
           <div className="max-w-3xl mx-auto px-6 text-center">
             <span className="dd-mono text-xs tracking-widest block mb-6" style={{color:"rgba(196,164,120,0.5)"}}>COMENZAR</span>
             <h2 className="text-3xl lg:text-5xl font-light mb-5" style={{color:textPri}}>
-              ¿Necesitás <span className="font-semibold" style={{color:"#c4a478"}}>datos aéreos</span> para tu próximo proyecto?
+              ¿Necesitás <span className="font-semibold" style={{color:accentStrong}}>datos aéreos</span> para tu próximo proyecto?
             </h2>
             <p className="text-sm leading-relaxed mb-12" style={{color:textFade}}>
               Contanos los requerimientos técnicos de tu proyecto y te enviamos una propuesta detallada en menos de 24 horas.
