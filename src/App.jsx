@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import PointCloudViewer from "./PointCloudViewer.jsx";
 
 // ═══════════════════════════════════════════════════════════════════════
 // DATA
@@ -447,6 +448,8 @@ function OrthoViewer() {
         <div className="flex-1 relative overflow-hidden cursor-crosshair" onClick={layer === "real" ? undefined : handleClick}>
           {layer === "real" ? (
             <LeafletMap />
+          ) : layer === "pointcloud" ? (
+            <PointCloudViewer />
           ) : (
             <canvas ref={canvasRef} className="w-full h-full" style={{ transform: `scale(${zoom})`, transformOrigin: "center" }} />
           )}
@@ -1336,14 +1339,17 @@ function Row({ label, value, accent }) {
 // ═══════════════════════════════════════════════════════════════════════
 function ServiciosPage({ onBack, onPresupuesto, dark, onToggleTheme }) {
   const dm = dark;
-  const bg = dm ? "#0a0c10" : "#f5f2ee";
-  const textPri = dm ? "white" : "#1a1612";
-  const textMed = dm ? "rgba(255,255,255,0.55)" : "rgba(30,24,18,0.65)";
-  const textFade = dm ? "rgba(255,255,255,0.35)" : "rgba(30,24,18,0.45)";
-  const textDim = dm ? "rgba(255,255,255,0.25)" : "rgba(30,24,18,0.3)";
-  const cardBg = dm ? "rgba(255,255,255,0.01)" : "rgba(255,255,255,0.7)";
-  const cardBorder = dm ? "rgba(255,255,255,0.04)" : "rgba(196,164,120,0.18)";
+  // Light-mode palette mirrors tarifario_v2 editorial system.
+  const bg = dm ? "#0a0c10" : "#f5f5f2";
+  const textPri = dm ? "white" : "#111110";
+  const textMed = dm ? "rgba(255,255,255,0.55)" : "#2e2e2b";
+  const textFade = dm ? "rgba(255,255,255,0.35)" : "#5a5a55";
+  const textDim = dm ? "rgba(255,255,255,0.25)" : "#8a8a82";
+  const cardBg = dm ? "rgba(255,255,255,0.01)" : "#ffffff";
+  const cardBorder = dm ? "rgba(255,255,255,0.04)" : "#e2e2dc";
   const accent = "#c4a478";
+  const ctaBg = dm ? accent : "#111110";
+  const ctaText = dm ? "#0a0c10" : "#ffffff";
 
   const [form, setForm] = useState({ nombre: "", email: "", empresa: "", telefono: "", servicio: "", obra: "", mensaje: "" });
   const [sent, setSent] = useState(false);
@@ -1591,7 +1597,7 @@ function ServiciosPage({ onBack, onPresupuesto, dark, onToggleTheme }) {
                       {errors.mensaje && <span className="text-xs mt-1 block" style={{ color: "#d45050" }}>{errors.mensaje}</span>}
                     </div>
 
-                    <button type="submit" className="w-full py-4 rounded-xl text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all" style={{ background: accent, color: "#0a0c10" }}>
+                    <button type="submit" className="w-full py-4 rounded-xl text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all" style={{ background: ctaBg, color: ctaText }}>
                       <Ic.Send /> Enviar consulta
                     </button>
                     <p className="text-xs mt-3 text-center" style={{ color: textDim }}>Datos tratados bajo Ley 25.326 · No compartimos información con terceros</p>
@@ -1845,18 +1851,23 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
   useEffect(() => { if (scrollY > 10) setMobileMenuOpen(false); }, [scrollY]);
 
   const dm = darkMode;
-  const bg       = dm ? "#0a0c10" : "#f5f2ee";
-  const navBg    = dm ? "rgba(10,12,16,0.92)" : "rgba(245,242,238,0.92)";
-  const navBorder= dm ? "rgba(196,164,120,0.06)" : "rgba(196,164,120,0.2)";
-  const textPri  = dm ? "white" : "#0f0c08";
-  const textMed  = dm ? "rgba(255,255,255,0.55)" : "rgba(20,14,8,0.82)";
-  const textFade = dm ? "rgba(255,255,255,0.35)" : "rgba(20,14,8,0.7)";
-  const textFade2= dm ? "rgba(255,255,255,0.45)" : "rgba(20,14,8,0.75)";
-  const textDim  = dm ? "rgba(255,255,255,0.25)" : "rgba(20,14,8,0.55)";
+  // Light-mode palette mirrors tarifario_v2 editorial system:
+  // warm-grey neutral, near-black text scale, solid borders, no gold tint.
+  const bg       = dm ? "#0a0c10" : "#f5f5f2";
+  const navBg    = dm ? "rgba(10,12,16,0.92)" : "rgba(245,245,242,0.92)";
+  const navBorder= dm ? "rgba(196,164,120,0.06)" : "#e2e2dc";
+  const textPri  = dm ? "white" : "#111110";
+  const textMed  = dm ? "rgba(255,255,255,0.55)" : "#2e2e2b";
+  const textFade = dm ? "rgba(255,255,255,0.35)" : "#5a5a55";
+  const textFade2= dm ? "rgba(255,255,255,0.45)" : "#5a5a55";
+  const textDim  = dm ? "rgba(255,255,255,0.25)" : "#8a8a82";
   const accent   = "#c4a478";
-  const accentStrong = dm ? "#c4a478" : "#8a6a3e";
-  const cardBg   = dm ? "rgba(255,255,255,0.01)" : "rgba(255,255,255,0.9)";
-  const cardBorder= dm ? "rgba(255,255,255,0.04)" : "rgba(138,106,62,0.25)";
+  const accentStrong = dm ? "#c4a478" : "#111110";
+  const cardBg   = dm ? "rgba(255,255,255,0.01)" : "#ffffff";
+  const cardBorder= dm ? "rgba(255,255,255,0.04)" : "#e2e2dc";
+  // Primary CTA: gold in dark, near-black "tag" in light (editorial)
+  const ctaBg    = dm ? "#c4a478" : "#111110";
+  const ctaText  = dm ? "#0a0c10" : "#ffffff";
 
   const NAV_ITEMS = [{t:"Servicios",v:"servicios"},{t:"Casos de Uso",v:"casos"},{t:"Presupuesto",v:"presupuesto"},{t:"Plataforma",v:"stack"},{t:"Contacto",v:null}];
 
@@ -1907,7 +1918,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
                 <a key={item.t} href="#" onClick={e => { e.preventDefault(); if (item.v) onNavigate(item.v); }}
                   className="text-xs tracking-wider transition-colors"
                   style={{color: textFade}}
-                  onMouseEnter={e => e.target.style.color = accent}
+                  onMouseEnter={e => e.target.style.color = accentStrong}
                   onMouseLeave={e => e.target.style.color = textFade}>
                   {item.t}
                 </a>
@@ -1919,7 +1930,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
               {/* Dark/Light toggle */}
               <button id="theme-toggle" onClick={() => setDarkMode(d => !d)}
                 className="dd-theme-btn w-9 h-9 rounded-xl flex items-center justify-center"
-                style={{ background: dm ? "rgba(196,164,120,0.08)" : "rgba(196,164,120,0.12)", color: accent, border: `1px solid rgba(196,164,120,0.2)` }}
+                style={{ background: dm ? "rgba(196,164,120,0.08)" : "rgba(17,17,16,0.04)", color: dm ? accent : accentStrong, border: `1px solid ${dm ? "rgba(196,164,120,0.2)" : "rgba(17,17,16,0.18)"}` }}
                 title={dm ? "Modo claro" : "Modo oscuro"}>
                 {dm ? <Ic.Sun /> : <Ic.Moon />}
               </button>
@@ -1927,8 +1938,8 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
               {/* Portal button — hidden on mobile */}
               <button onClick={() => onNavigate("login")}
                 className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium tracking-wider transition-all dd-glow"
-                style={{border:`1px solid rgba(196,164,120,0.25)`, color: accent}}
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(196,164,120,0.06)"}
+                style={{border:`1px solid ${dm ? "rgba(196,164,120,0.25)" : "#111110"}`, color: dm ? accent : accentStrong}}
+                onMouseEnter={e => e.currentTarget.style.background = dm ? "rgba(196,164,120,0.06)" : "rgba(17,17,16,0.05)"}
                 onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                 Portal Clientes
               </button>
@@ -1962,7 +1973,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
                 <div style={{ height: 1, background: `${navBorder}`, margin: "6px 0" }} />
                 <button onClick={() => { setMobileMenuOpen(false); onNavigate("login"); }}
                   className="w-full py-3.5 rounded-xl text-sm font-semibold tracking-wider"
-                  style={{ background: accent, color: "#0a0c10" }}>
+                  style={{ background: ctaBg, color: ctaText }}>
                   Portal Clientes
                 </button>
               </div>
@@ -2005,7 +2016,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
               </p>
 
               <div className="dd-fade-up dd-fade-up-d4 flex flex-wrap items-center gap-4">
-                <button onClick={()=>onNavigate("login")} className="flex items-center gap-3 px-8 py-4 rounded-xl text-sm font-semibold tracking-wide transition-all dd-glow" style={{background:"#c4a478",color:"#0a0c10"}}>
+                <button onClick={()=>onNavigate("login")} className="flex items-center gap-3 px-8 py-4 rounded-xl text-sm font-semibold tracking-wide transition-all dd-glow" style={{background:ctaBg,color:ctaText}}>
                   Acceder al portal <Ic.Arrow />
                 </button>
                 <button className="flex items-center gap-3 px-8 py-4 rounded-xl text-sm font-medium tracking-wide transition-all" style={{color: dm ? "rgba(255,255,255,0.5)" : textFade, border: dm ? "1px solid rgba(255,255,255,0.08)" : `1px solid ${accent}20`}} onMouseEnter={e=>e.currentTarget.style.borderColor=dm?"rgba(196,164,120,0.2)":"rgba(196,164,120,0.4)"} onMouseLeave={e=>e.currentTarget.style.borderColor=dm?"rgba(255,255,255,0.08)":`${accent}20`}>
@@ -2167,7 +2178,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
               Contanos los requerimientos técnicos de tu proyecto y te enviamos una propuesta detallada en menos de 24 horas.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button onClick={()=>onNavigate("servicios")} className="px-8 py-4 rounded-xl text-sm font-semibold tracking-wide dd-glow transition-all" style={{background:"#c4a478",color:"#0a0c10"}}>Solicitar presupuesto</button>
+              <button onClick={()=>onNavigate("servicios")} className="px-8 py-4 rounded-xl text-sm font-semibold tracking-wide dd-glow transition-all" style={{background:ctaBg,color:ctaText}}>Solicitar presupuesto</button>
               <button onClick={()=>onNavigate("login")} className="px-8 py-4 rounded-xl text-sm font-medium tracking-wide transition-all" style={{color:textFade,border: dm ? "1px solid rgba(255,255,255,0.06)" : `1px solid ${accent}20`}} onMouseEnter={e=>e.currentTarget.style.borderColor=dm?"rgba(196,164,120,0.15)":`${accent}40`} onMouseLeave={e=>e.currentTarget.style.borderColor=dm?"rgba(255,255,255,0.06)":`${accent}20`}>Ya tengo cuenta</button>
             </div>
           </div>
