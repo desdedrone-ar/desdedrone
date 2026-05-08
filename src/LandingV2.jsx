@@ -297,9 +297,9 @@ export default function LandingV2({ onNavigate, darkMode, setDarkMode }) {
       <div className="dd-body">
         {/* ── NAV ── */}
         <nav className="fixed top-0 left-0 right-0 z-50 transition-all" style={{
-          background: scrollY > 50 || mobileMenuOpen ? navBg : "transparent",
-          backdropFilter: scrollY > 50 || mobileMenuOpen ? "blur(16px)" : "none",
-          borderBottom: scrollY > 50 ? `1px solid ${navBorder}` : "1px solid transparent",
+          background: navBg,
+          backdropFilter: "blur(16px)",
+          borderBottom: `1px solid ${navBorder}`,
         }}>
           <div className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-12 py-4">
             <div className="flex items-center gap-2.5">
@@ -372,7 +372,7 @@ export default function LandingV2({ onNavigate, darkMode, setDarkMode }) {
         {/* ── HERO (igual que v1) ── */}
         <section className="relative min-h-screen flex items-center overflow-hidden">
           <video
-            className="absolute inset-0 w-full h-full object-cover lg:object-contain"
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[155%] h-auto lg:translate-x-0 lg:left-0 lg:inset-0 lg:w-full lg:h-full lg:object-contain"
             src="/video/hero.mp4"
             autoPlay muted loop playsInline preload="auto" aria-hidden="true"
             style={{ opacity: dm ? 0.75 : 0.9 }}
