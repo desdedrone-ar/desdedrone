@@ -4,7 +4,11 @@
       "Bash(mkdir -p c:/Users/maxic/desdedrone/public/maps)",
       "Bash(python -c ':*)",
       "Read(//c/Users/maxic/.claude/skills/**)",
-      "Read(//c/Users/maxic/.claude/**)"
+      "Read(//c/Users/maxic/.claude/**)",
+      "Bash(mkdir -p \"c:/cloude/desdedrone/public/video\" && cp \"D:/VideosExportados/hero.mp4\" \"c:/cloude/desdedrone/public/video/hero.mp4\" && ls -lh \"c:/cloude/desdedrone/public/video/\")"
+    ],
+    "additionalDirectories": [
+      "D:\\VideosExportados"
     ]
   }
 }

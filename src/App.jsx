@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import PointCloudViewer from "./PointCloudViewer.jsx";
+import { CLOUDS } from "./clouds";
+import LandingV2 from "./LandingV2.jsx";
 
 // ═══════════════════════════════════════════════════════════════════════
 // DATA
@@ -19,7 +21,8 @@ const OBS_INIT = [
 // ═══════════════════════════════════════════════════════════════════════
 // ICONS
 // ═══════════════════════════════════════════════════════════════════════
-const Ic = {
+// eslint-disable-next-line react-refresh/only-export-components
+export const Ic = {
   Map:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3V7z"/><path d="M9 4v13M15 7v13"/></svg>,
   Video:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><rect x="2" y="4" width="15" height="16" rx="2"/><path d="M17 10l5-3v10l-5-3"/></svg>,
   Grid:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
@@ -57,7 +60,7 @@ const Ic = {
 // ═══════════════════════════════════════════════════════════════════════
 // TOPOGRAPHIC CANVAS
 // ═══════════════════════════════════════════════════════════════════════
-function TopoCanvas() {
+export function TopoCanvas() {
   const ref = useRef(null);
   useEffect(() => {
     const c = ref.current; if (!c) return;
@@ -125,7 +128,7 @@ function TopoCanvas() {
 // ═══════════════════════════════════════════════════════════════════════
 // COUNTER
 // ═══════════════════════════════════════════════════════════════════════
-function Counter({ end, suffix = "", prefix = "" }) {
+export function Counter({ end, suffix = "", prefix = "" }) {
   const [val, setVal] = useState(0);
   const ref = useRef(null);
   const started = useRef(false);
@@ -151,7 +154,7 @@ function Counter({ end, suffix = "", prefix = "" }) {
 // ═══════════════════════════════════════════════════════════════════════
 // LEAFLET MAP — real georeferenced orthophoto + base map
 // ═══════════════════════════════════════════════════════════════════════
-function LeafletMap({ metaUrl = "/maps/juana-manso.json" }) {
+export function LeafletMap({ metaUrl = "/maps/juana-manso.json" }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const [meta, setMeta] = useState(null);
@@ -247,6 +250,7 @@ const terrainH = (nx, ny) =>
 function OrthoViewer() {
   const canvasRef = useRef(null);
   const [layer, setLayer] = useState("real");
+  const [activeCloudId, setActiveCloudId] = useState(CLOUDS[0].id);
   const [zoom, setZoom] = useState(1);
   const [measuring, setMeasuring] = useState(false);
   const [info, setInfo] = useState(null);
@@ -424,6 +428,24 @@ function OrthoViewer() {
             {l.icon}{l.label}
           </button>
         ))}
+        {layer === "pointcloud" && (
+          <select
+            value={activeCloudId}
+            onChange={(e) => setActiveCloudId(e.target.value)}
+            className="px-3 py-1.5 rounded-md text-xs font-medium ml-2"
+            style={{
+              background: "rgba(196,164,120,0.08)",
+              color: "#c4a478",
+              border: "1px solid rgba(196,164,120,0.2)",
+            }}
+          >
+            {CLOUDS.map((c) => (
+              <option key={c.id} value={c.id} style={{ background: "#0a0d14" }}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        )}
         <div className="flex-1" />
         <button onClick={() => setMeasuring(!measuring)} className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs"
           style={{ background: measuring ? "rgba(196,164,120,0.12)" : "transparent", color: measuring ? "#c4a478" : "rgba(255,255,255,0.4)", border: measuring ? "1px solid rgba(196,164,120,0.2)" : "1px solid rgba(255,255,255,0.08)" }}>
@@ -449,7 +471,7 @@ function OrthoViewer() {
           {layer === "real" ? (
             <LeafletMap />
           ) : layer === "pointcloud" ? (
-            <PointCloudViewer />
+            <PointCloudViewer key={activeCloudId} cloudId={activeCloudId} />
           ) : (
             <canvas ref={canvasRef} className="w-full h-full" style={{ transform: `scale(${zoom})`, transformOrigin: "center" }} />
           )}
@@ -1983,6 +2005,20 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
 
         {/* ── HERO ── */}
         <section className="relative min-h-screen flex items-center overflow-hidden">
+          <video
+            className="absolute inset-0 w-full h-full object-contain"
+            src="/video/hero.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+            style={{ opacity: dm ? 0.65 : 0.9 }}
+          />
+          <div className="absolute inset-0 pointer-events-none" style={{background: dm
+            ? "linear-gradient(180deg, rgba(8,10,14,0.35) 0%, rgba(8,10,14,0.1) 40%, rgba(8,10,14,0.65) 100%)"
+            : "linear-gradient(180deg, rgba(245,240,232,0.2) 0%, rgba(245,240,232,0.05) 40%, rgba(245,240,232,0.55) 100%)"}} />
           {dm && <TopoCanvas />}
           <div className="absolute inset-0" style={{background: dm ? "radial-gradient(ellipse at 70% 40%, rgba(196,164,120,0.04), transparent 60%)" : "radial-gradient(ellipse at 70% 40%, rgba(196,164,120,0.08), transparent 60%)"}} />
 
@@ -2191,6 +2227,16 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
             <p className="dd-mono text-xs" style={{color: dm ? "rgba(255,255,255,0.12)" : textDim}}>© 2026 — Servicios aéreos con drones de precisión — Argentina</p>
           </div>
         </footer>
+
+        {/* ── V1 / V2 toggle (discreto) ── */}
+        <button onClick={() => onNavigate("landing-v2")}
+          className="dd-mono fixed bottom-4 right-4 z-[120] px-3 py-1.5 rounded-full text-[10px] tracking-widest transition-opacity"
+          style={{ background: dm ? "rgba(10,12,16,0.7)" : "rgba(245,245,242,0.85)", color: accentStrong, border: `1px solid ${dm ? "rgba(196,164,120,0.25)" : "rgba(17,17,16,0.18)"}`, backdropFilter: "blur(10px)", opacity: 0.45 }}
+          onMouseEnter={e => e.currentTarget.style.opacity = 1}
+          onMouseLeave={e => e.currentTarget.style.opacity = 0.45}
+          title="Probar landing alternativa">
+          V1 · V2 →
+        </button>
       </div>
     </div>
   );
@@ -2205,6 +2251,7 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(true);
 
   if (view === "landing") return <Landing onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}} darkMode={darkMode} setDarkMode={setDarkMode}/>;
+  if (view === "landing-v2") return <LandingV2 onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}} darkMode={darkMode} setDarkMode={setDarkMode}/>;
   if (view === "login") return <Login onLogin={()=>setView("dashboard")} onBack={()=>setView("landing")}/>;
   if (view === "stack") return <StackPage onBack={()=>setView("landing")}/>;
   if (view === "casos") return <CasosDeUsoPage onBack={()=>setView("landing")} onContacto={()=>setView("presupuesto")}/>;

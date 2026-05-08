@@ -4,13 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "cross-env NODE_ENV=development vite",
+    "build": "cross-env NODE_ENV=production vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "cross-env NODE_ENV=production vite preview"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
+    "potree-core": "^2.0.15",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "three": "^0.184.0"
@@ -21,6 +22,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "cross-env": "^10.1.0",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",

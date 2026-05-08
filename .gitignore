@@ -26,3 +26,9 @@ dist-ssr
 .vercel
 .env*.local
 *.zip
+
+# Point cloud assets (servidas desde R2 en prod, copia local en dev)
+public/pointclouds/
+
+# Video assets pesados (servidos desde CDN en prod, copia local en dev)
+public/video/
