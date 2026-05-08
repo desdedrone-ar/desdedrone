@@ -2014,7 +2014,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
             playsInline
             preload="auto"
             aria-hidden="true"
-            style={{ opacity: dm ? 0.65 : 0.9, height: "calc(100vh - 72px)" }}
+            style={{ opacity: dm ? 0.65 : 0.9, height: "80vh" }}
           />
           <div className="absolute inset-0 pointer-events-none" style={{background: dm
             ? "linear-gradient(180deg, rgba(8,10,14,0.35) 0%, rgba(8,10,14,0.1) 40%, rgba(8,10,14,0.65) 100%)"

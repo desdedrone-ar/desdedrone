@@ -375,7 +375,7 @@ export default function LandingV2({ onNavigate, darkMode, setDarkMode }) {
             className="absolute top-[72px] left-0 right-0 w-full object-cover object-top lg:object-contain"
             src="/video/hero.mp4"
             autoPlay muted loop playsInline preload="auto" aria-hidden="true"
-            style={{ opacity: dm ? 0.75 : 0.9, height: "calc(100vh - 72px)" }}
+            style={{ opacity: dm ? 0.75 : 0.9, height: "80vh" }}
           />
           <div className="absolute inset-0 pointer-events-none" style={{
             background: dm
