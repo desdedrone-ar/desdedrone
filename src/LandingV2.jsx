@@ -372,7 +372,7 @@ export default function LandingV2({ onNavigate, darkMode, setDarkMode }) {
         {/* ── HERO (igual que v1) ── */}
         <section className="relative min-h-screen flex items-center overflow-hidden">
           <video
-            className="absolute inset-0 w-full h-full object-contain"
+            className="absolute inset-0 w-full h-full object-cover lg:object-contain"
             src="/video/hero.mp4"
             autoPlay muted loop playsInline preload="auto" aria-hidden="true"
             style={{ opacity: dm ? 0.75 : 0.9 }}
