@@ -488,7 +488,7 @@ export default function LandingV2({ onNavigate, darkMode, setDarkMode }) {
             { val: "±2 cm", lbl: "precisión" },
           ]}
           reverse={true}
-          visual={<VideoVisual src="/video/seguimiento.mp4" color={C_OBRA} />}
+          visual={<VideoVisual src="/video/seguimiento.mp4?v=2" color={C_OBRA} />}
         />
 
         <ServiceSceneCard
