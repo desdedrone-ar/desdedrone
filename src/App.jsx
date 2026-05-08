@@ -1923,9 +1923,9 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
       <div className="dd-body">
         {/* ── NAV ── */}
         <nav className="fixed top-0 left-0 right-0 z-50 transition-all" style={{
-          background: scrollY > 50 || mobileMenuOpen ? navBg : "transparent",
-          backdropFilter: scrollY > 50 || mobileMenuOpen ? "blur(16px)" : "none",
-          borderBottom: scrollY > 50 ? `1px solid ${navBorder}` : "1px solid transparent",
+          background: navBg,
+          backdropFilter: "blur(16px)",
+          borderBottom: `1px solid ${navBorder}`,
         }}>
           <div className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-12 py-4">
             {/* Logo */}
@@ -2006,7 +2006,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
         {/* ── HERO ── */}
         <section className="relative min-h-screen flex items-center overflow-hidden">
           <video
-            className="absolute inset-0 w-full h-full object-contain"
+            className="absolute top-[72px] left-0 right-0 w-full object-cover object-top lg:object-contain"
             src="/video/hero.mp4"
             autoPlay
             muted
@@ -2014,7 +2014,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
             playsInline
             preload="auto"
             aria-hidden="true"
-            style={{ opacity: dm ? 0.65 : 0.9 }}
+            style={{ opacity: dm ? 0.65 : 0.9, height: "calc(100vh - 72px)" }}
           />
           <div className="absolute inset-0 pointer-events-none" style={{background: dm
             ? "linear-gradient(180deg, rgba(8,10,14,0.35) 0%, rgba(8,10,14,0.1) 40%, rgba(8,10,14,0.65) 100%)"
