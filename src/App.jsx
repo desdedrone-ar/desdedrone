@@ -3,7 +3,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import PointCloudViewer from "./PointCloudViewer.jsx";
 import { CLOUDS } from "./clouds";
-import LandingV2 from "./LandingV2.jsx";
+import LandingV3 from "./LandingV3.jsx";
 
 // ═══════════════════════════════════════════════════════════════════════
 // DATA
@@ -2228,14 +2228,14 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
           </div>
         </footer>
 
-        {/* ── V1 / V2 toggle (discreto) ── */}
-        <button onClick={() => onNavigate("landing-v2")}
+        {/* ── V1 / V3 toggle (discreto) ── */}
+        <button onClick={() => onNavigate("landing")}
           className="dd-mono fixed bottom-4 right-4 z-[120] px-3 py-1.5 rounded-full text-[10px] tracking-widest transition-opacity"
           style={{ background: dm ? "rgba(10,12,16,0.7)" : "rgba(245,245,242,0.85)", color: accentStrong, border: `1px solid ${dm ? "rgba(196,164,120,0.25)" : "rgba(17,17,16,0.18)"}`, backdropFilter: "blur(10px)", opacity: 0.45 }}
           onMouseEnter={e => e.currentTarget.style.opacity = 1}
           onMouseLeave={e => e.currentTarget.style.opacity = 0.45}
-          title="Probar landing alternativa">
-          V1 · V2 →
+          title="Volver a landing principal">
+          V1 · V3 →
         </button>
       </div>
     </div>
@@ -2250,8 +2250,8 @@ export default function App() {
   const [proj, setProj] = useState(null);
   const [darkMode, setDarkMode] = useState(true);
 
-  if (view === "landing") return <Landing onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}} darkMode={darkMode} setDarkMode={setDarkMode}/>;
-  if (view === "landing-v2") return <LandingV2 onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}} darkMode={darkMode} setDarkMode={setDarkMode}/>;
+  if (view === "landing" || view === "landing-v3") return <LandingV3 onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}} darkMode={darkMode} setDarkMode={setDarkMode}/>;
+  if (view === "landing-v1") return <Landing onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}} darkMode={darkMode} setDarkMode={setDarkMode}/>;
   if (view === "login") return <Login onLogin={()=>setView("dashboard")} onBack={()=>setView("landing")}/>;
   if (view === "stack") return <StackPage onBack={()=>setView("landing")}/>;
   if (view === "casos") return <CasosDeUsoPage onBack={()=>setView("landing")} onContacto={()=>setView("presupuesto")}/>;
