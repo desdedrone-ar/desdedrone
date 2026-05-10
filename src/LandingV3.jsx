@@ -161,7 +161,7 @@ export default function LandingV3({ onNavigate, darkMode, setDarkMode }) {
     cardBorder:"rgba(20,18,15,0.10)",
     inputBg:   "rgba(20,18,15,0.03)",
     inputBgFc: "rgba(20,18,15,0.06)",
-    heroScrim: "linear-gradient(135deg, rgba(244,241,234,0.55) 0%, rgba(244,241,234,0.25) 100%)",
+    heroScrim: "linear-gradient(135deg, rgba(48,48,46,0.55) 0%, rgba(48,48,46,0.30) 100%)",
     navBg:     "rgba(244,241,234,0.78)",
     navBgScroll:"rgba(244,241,234,0.95)",
     tileShadow:"0 24px 60px rgba(20,18,15,0.18)",
@@ -937,14 +937,41 @@ export default function LandingV3({ onNavigate, darkMode, setDarkMode }) {
           .dd3-burger { display: flex; }
 
           .dd3-hero { padding-bottom: clamp(4.5rem, 12vh, 7rem); }
+          .dd3-hero-video { object-position: 41% center; }
           .dd3-hero-content { padding: 0 1.25rem; }
-          .dd3-hero h1 { font-size: clamp(2rem, 8vw, 2.7rem); margin-bottom: 2rem; }
-          .dd3-eyebrow-hero { margin-bottom: 1.5rem; font-size: .6rem; letter-spacing: .12em; }
+          .dd3-hero h1 {
+            font-size: clamp(2rem, 8vw, 2.7rem);
+            margin-bottom: 2rem;
+            color: rgba(255,255,255,0.96);
+            text-shadow: 0 2px 18px rgba(0,0,0,0.35);
+          }
+          .dd3-eyebrow-hero {
+            margin-bottom: 1.5rem;
+            font-size: .6rem;
+            letter-spacing: .12em;
+            color: rgba(255,255,255,0.85);
+          }
           .dd3-eyebrow-hero .dashes-d { display: none; }
           .dd3-eyebrow-hero .dashes-m { display: inline; }
           .dd3-hero-ctas { gap: .7rem; flex-direction: column; align-items: stretch; width: 100%; max-width: 320px; margin: 0 auto; }
           .dd3-hero-ctas .dd3-cta,
           .dd3-hero-ctas .dd3-cta-secondary { width: 100%; }
+          .dd3-hero-ctas .dd3-cta {
+            background: rgba(255,255,255,0.12);
+            color: #cececc;
+          }
+          .dd3-hero-ctas .dd3-cta:hover {
+            background: ${gold};
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.32);
+          }
+          .dd3-hero-ctas .dd3-cta-secondary {
+            border-color: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.96);
+          }
+          .dd3-hero-ctas .dd3-cta-secondary:hover {
+            background: rgba(255,255,255,0.12);
+          }
           .dd3-scroll-hint { bottom: 1.4rem; }
 
           .dd3-services { padding: 64px 1rem; }
@@ -952,17 +979,25 @@ export default function LandingV3({ onNavigate, darkMode, setDarkMode }) {
           .dd3-service-card { padding: 1.9rem 1.4rem; }
           .dd3-service-title { font-size: 1.18rem; }
 
-          .dd3-tile-section { padding: 64px 1rem; }
-          .dd3-tile-meta { gap: .9rem; margin-bottom: 1.2rem; }
+          .dd3-tile-section { padding: 64px 0; }
+          .dd3-tile-wrap { width: 100%; }
+          .dd3-tile-meta { gap: .9rem; margin-bottom: 1.2rem; padding: 0 1rem; }
           .dd3-tile-num { font-size: 2rem; }
           .dd3-tile-rule { flex-basis: 38px; }
           .dd3-tile-label { font-size: .65rem; letter-spacing: .15em; }
-          .dd3-tile-overlay {
-            left: 1rem; right: 1rem; bottom: 1rem;
+          .dd3-tile-video {
+            border-radius: 0;
+            border-left: none; border-right: none;
+            aspect-ratio: 4 / 5;
           }
-          .dd3-tile-title { font-size: clamp(1.4rem, 6vw, 1.95rem); }
+          .dd3-tile-overlay {
+            left: 1rem; right: 1rem; bottom: 1.2rem;
+          }
+          .dd3-tile-title { font-size: clamp(1.6rem, 7vw, 2.2rem); }
           .dd3-tile-sector { font-size: .65rem; letter-spacing: .12em; }
           .dd3-tile-corner.top-left { top: .9rem; left: .9rem; font-size: .62rem; }
+          .dd3-tile-play { top: .9rem; right: .9rem; width: 40px; height: 40px; }
+          .dd3-tile-detail { padding: 0 1rem; }
           .dd3-tile-desc.dd3-desktop { display: none; }
           .dd3-tile-desc.dd3-mobile  { display: block; font-size: .96rem; line-height: 1.65; }
           .dd3-tile-list li { font-size: .92rem; }
