@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Leads — Constructoras CABA | desdedrone</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: #0a0c10; color: #e0d8cc; font-size: 13px; line-height: 1.7; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .page { max-width: 900px; margin: 0 auto; padding: 48px 40px; }
+
+  /* Header */
+  .doc-header { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 28px; border-bottom: 1px solid rgba(196,164,120,0.15); margin-bottom: 36px; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-icon { font-size: 22px; color: #c4a478; }
+  .brand-name { font-size: 14px; font-weight: 600; letter-spacing: 0.1em; color: white; }
+  .brand-name span { color: #c4a478; }
+  .doc-meta { text-align: right; }
+  .doc-meta .label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(196,164,120,0.5); }
+  .doc-meta .value { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+
+  /* Title block */
+  .title-block { margin-bottom: 40px; }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: rgba(196,164,120,0.5); text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: rgba(196,164,120,0.3); }
+  h1 { font-size: 28px; font-weight: 300; color: white; line-height: 1.2; }
+  h1 strong { font-weight: 600; color: #c4a478; }
+  .subtitle { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 8px; }
+
+  /* Section headers */
+  h2 { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(196,164,120,0.6); font-family: 'IBM Plex Mono', monospace; margin: 36px 0 16px; display: flex; align-items: center; gap: 8px; }
+  h2::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.04); }
+
+  /* Cards */
+  .card { border: 1px solid rgba(196,164,120,0.1); border-radius: 16px; padding: 22px 24px; margin-bottom: 14px; background: rgba(196,164,120,0.02); break-inside: avoid; }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+  .card-number { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: rgba(196,164,120,0.4); font-weight: 500; }
+  .card-title { font-size: 16px; font-weight: 600; color: white; margin-bottom: 2px; }
+  .card-sub { font-size: 11px; color: rgba(255,255,255,0.25); }
+  .badge { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 20px; background: rgba(196,164,120,0.08); border: 1px solid rgba(196,164,120,0.15); color: #c4a478; white-space: nowrap; }
+  .badge.blue { background: rgba(143,180,196,0.08); border-color: rgba(143,180,196,0.2); color: #8fb4c4; }
+  .badge.amber { background: rgba(212,160,83,0.08); border-color: rgba(212,160,83,0.2); color: #d4a053; }
+  .badge.green { background: rgba(160,184,144,0.08); border-color: rgba(160,184,144,0.2); color: #a0b890; }
+
+  /* Table */
+  .info-table { width: 100%; border-collapse: collapse; }
+  .info-table td { padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: top; }
+  .info-table td:first-child { font-family: 'IBM Plex Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.2); width: 130px; padding-top: 9px; }
+  .info-table td:last-child { color: rgba(255,255,255,0.7); font-size: 12px; }
+  .info-table a { color: #c4a478; text-decoration: none; }
+
+  /* Tip box */
+  .tip { background: rgba(196,164,120,0.04); border-left: 2px solid rgba(196,164,120,0.3); padding: 12px 16px; border-radius: 0 10px 10px 0; margin-top: 14px; }
+  .tip .tip-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: rgba(196,164,120,0.5); text-transform: uppercase; margin-bottom: 4px; }
+  .tip p { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+  /* Tier 2 grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .mini-card { border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px 18px; }
+  .mini-card .name { font-size: 13px; font-weight: 600; color: white; margin-bottom: 4px; }
+  .mini-card .spec { font-size: 11px; color: rgba(255,255,255,0.3); }
+
+  /* Steps */
+  .steps { counter-reset: step; }
+  .step { display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start; }
+  .step-num { counter-increment: step; width: 28px; height: 28px; border-radius: 50%; background: rgba(196,164,120,0.08); border: 1px solid rgba(196,164,120,0.15); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #c4a478; flex-shrink: 0; }
+  .step-content .title { font-size: 13px; font-weight: 600; color: white; }
+  .step-content .desc { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+
+  /* Checklist */
+  .checklist { list-style: none; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px; color: rgba(255,255,255,0.55); }
+  .checklist li::before { content: '☐'; color: rgba(196,164,120,0.4); font-size: 13px; flex-shrink: 0; line-height: 1.4; }
+
+  /* Sources table */
+  .src-table { width: 100%; border-collapse: collapse; }
+  .src-table th { font-family: 'IBM Plex Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.2); padding: 8px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 400; }
+  .src-table td { padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px; color: rgba(255,255,255,0.45); }
+  .src-table td a { color: #c4a478; text-decoration: none; }
+  .src-table tr:nth-child(even) td { background: rgba(255,255,255,0.01); }
+
+  /* Metrics row */
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+  .metric { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; padding: 14px; text-align: center; }
+  .metric .val { font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 500; color: #c4a478; }
+  .metric .lbl { font-size: 10px; color: rgba(255,255,255,0.25); margin-top: 3px; }
+
+  /* Footer */
+  .doc-footer { border-top: 1px solid rgba(255,255,255,0.04); padding-top: 20px; margin-top: 48px; display: flex; justify-content: space-between; align-items: center; }
+  .doc-footer span { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.12); }
+
+  /* Print */
+  @media print {
+    body { background: #0a0c10; }
+    .page { padding: 32px 30px; }
+    .card, .mini-card, .metric { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="brand">
+      <span class="brand-icon">◈</span>
+      <span class="brand-name">DESDEDRONE<span>.AR</span></span>
+    </div>
+    <div class="doc-meta">
+      <div class="label">Documento</div>
+      <div class="value">Research de Leads — CABA</div>
+      <div class="value" style="margin-top:4px; font-family:'IBM Plex Mono',monospace; font-size:10px;">Abril 2026</div>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="title-block">
+    <div class="eyebrow">Outreach comercial</div>
+    <h1>Leads para servicios de <strong>seguimiento de obras con drones</strong></h1>
+    <p class="subtitle">Mercado objetivo: CABA & Gran Buenos Aires, Argentina · Constructoras e Infraestructura</p>
+  </div>
+
+  <!-- Tier 1 -->
+  <h2>Tier 1 — Grandes constructoras (Alta prioridad)</h2>
+
+  <!-- CRIBA -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-number">01</div>
+        <div class="card-title">CRIBA</div>
+        <div class="card-sub">Torres residenciales · Oficinas · Hospitales · Centros comerciales</div>
+      </div>
+      <span class="badge">CABA · Uruguay</span>
+    </div>
+    <table class="info-table">
+      <tr><td>Sitio web</td><td><a href="https://www.criba.com.ar">www.criba.com.ar</a></td></tr>
+      <tr><td>Dirección</td><td>Cerrito 740, Piso 14 · CABA (C1010AAP)</td></tr>
+      <tr><td>Teléfono</td><td><strong style="color:#c4a478">(+54 11) 3984-7200</strong></td></tr>
+      <tr><td>Horario</td><td>Lunes a viernes · 09:00 a 18:00 hs</td></tr>
+      <tr><td>Contactar</td><td>Área de Operaciones / Gerente de Proyectos</td></tr>
+    </table>
+    <div class="tip">
+      <div class="tip-label">💡 Propuesta de valor</div>
+      <p>CRIBA tiene múltiples obras simultáneas en altura. El seguimiento quincenal con drones para reportes de avance a inversores es un diferencial muy valorado en el mercado premium de CABA.</p>
+    </div>
+  </div>
+
+  <!-- Caputo -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-number">02</div>
+        <div class="card-title">Caputo S.A. (CCyS)</div>
+        <div class="card-sub">Edificios públicos · Viviendas · Oficinas · Concesiones viales</div>
+      </div>
+      <span class="badge">Belgrano, CABA</span>
+    </div>
+    <table class="info-table">
+      <tr><td>Sitio web</td><td><a href="https://www.caputo.com.ar">www.caputo.com.ar</a></td></tr>
+      <tr><td>Dirección</td><td>Miñones 2177, Belgrano · CABA (C1428ATG)</td></tr>
+      <tr><td>Teléfono</td><td><strong style="color:#c4a478">(011) 4896-8500</strong></td></tr>
+      <tr><td>Email</td><td><strong style="color:#c4a478">recepcion@ccys.com</strong></td></tr>
+      <tr><td>Contactar</td><td>Gerente de Operaciones / Director técnico</td></tr>
+    </table>
+    <div class="tip">
+      <div class="tip-label">💡 Propuesta de valor</div>
+      <p>Con concesiones viales y obras públicas activas, la inspección de pavimento, puentes y calzadas con drones reduce tiempos operativos y genera documentación válida para organismos gubernamentales.</p>
+    </div>
+  </div>
+
+  <!-- Techint -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-number">03</div>
+        <div class="card-title">Techint Ingeniería y Construcción</div>
+        <div class="card-sub">Energía · Minería · Proyectos EPC · Vaca Muerta</div>
+      </div>
+      <span class="badge amber">Infraestructura compleja</span>
+    </div>
+    <table class="info-table">
+      <tr><td>Sitio web</td><td><a href="https://www.techint.com">www.techint.com</a></td></tr>
+      <tr><td>Contacto</td><td>Formulario web → Área Comercial → Argentina</td></tr>
+      <tr><td>Especialidad</td><td>Obras EPC de alta complejidad técnica</td></tr>
+      <tr><td>Proyectos 2025</td><td>Vaca Muerta, ductos, minería de cobre y litio</td></tr>
+    </table>
+    <div class="tip">
+      <div class="tip-label">💡 Propuesta de valor</div>
+      <p>Sus obras en zonas remotas (Vaca Muerta, minas) son ideales para inspección con drones. El mapeo 3D y la termografía aceleran certificaciones de avance en proyectos EPC.</p>
+    </div>
+  </div>
+
+  <!-- Roggio -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-number">04</div>
+        <div class="card-title">Benito Roggio e Hijos</div>
+        <div class="card-sub">Infraestructura vial · Ferroviaria · Agua y saneamiento</div>
+      </div>
+      <span class="badge green">Grupo Roggio</span>
+    </div>
+    <table class="info-table">
+      <tr><td>Sitio web</td><td><a href="https://www.roggio.com.ar">www.roggio.com.ar</a></td></tr>
+      <tr><td>Grupo</td><td>Grupo Roggio (Metrovías · Manliba · Benito Roggio)</td></tr>
+      <tr><td>Especialidad</td><td>Obras civiles de infraestructura pública</td></tr>
+      <tr><td>Contactar</td><td>LinkedIn → Director de Obras o Gerente de Proyectos</td></tr>
+    </table>
+    <div class="tip">
+      <div class="tip-label">💡 Propuesta de valor</div>
+      <p>Operan infraestructura crítica: vías de tren, subtes y redes. La inspección de viaductos y puentes con drones elimina andamiaje costoso y mejora la seguridad del personal.</p>
+    </div>
+  </div>
+
+  <!-- Tier 2 -->
+  <h2>Tier 2 — Constructoras medianas (Prioridad media)</h2>
+  <div class="grid-2">
+    <div class="mini-card">
+      <div class="name">Riva S.A.</div>
+      <div class="spec">Obras civiles, viales e hidráulicas · Buenos Aires y AMBA</div>
+      <div style="margin-top:8px"><a href="https://www.riva.com.ar" style="color:#c4a478;font-size:11px">www.riva.com.ar</a></div>
+    </div>
+    <div class="mini-card">
+      <div class="name">J. Cartellone Construcciones</div>
+      <div class="spec">Infraestructura vial, puentes, obras hidráulicas · +80 años de trayectoria</div>
+      <div style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.25)">Contacto: LinkedIn corporativo</div>
+    </div>
+    <div class="mini-card">
+      <div class="name">Consultatio Real Estate</div>
+      <div class="spec">Desarrollos premium · Torres Catalinas Norte · Marketing de preventa</div>
+    </div>
+    <div class="mini-card">
+      <div class="name">IRSA / Vizora / Argencons</div>
+      <div class="spec">Desarrolladoras CABA (Palermo, Recoleta, Belgrano) · Edificios corporativos</div>
+    </div>
+  </div>
+
+  <!-- Sectores complementarios -->
+  <h2>Sectores complementarios</h2>
+  <table class="src-table">
+    <thead>
+      <tr><th>Empresa</th><th>Tipo</th><th>Oportunidad con drones</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Edesur / Edenor</td><td>Energía eléctrica</td><td>Inspección de redes y torres de alta tensión</td></tr>
+      <tr><td>Metrogas</td><td>Gas natural</td><td>Inspección de gasoductos e instalaciones</td></tr>
+      <tr><td>Telecom / Claro / Personal</td><td>Telecomunicaciones</td><td>Inspección de antenas y torres</td></tr>
+      <tr><td>YPF</td><td>Energía / Petróleo</td><td>Inspección de plantas, ductos y pozos</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Estrategia de contacto -->
+  <h2>Estrategia de contacto recomendada</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="title">LinkedIn directo</div>
+        <div class="desc">Buscar "Director de Obras" o "Jefe de Obra" en CRIBA, Caputo, Roggio. Conectar con nota personalizada (plantilla en documento de mensajes).</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="title">Email frío</div>
+        <div class="desc">Enviar a recepcion@ccys.com (Caputo) y formularios de contacto en sitios corporativos. Asunto con propuesta de valor concreta.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="title">Visita directa a obra en curso</div>
+        <div class="desc">Recorrer Puerto Madero, Palermo y Núñez. Presentarse al Jefe de Obra en la casilla de obra con one-pager impreso.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="title">Llamada telefónica</div>
+        <div class="desc">CRIBA: (011) 3984-7200 · Caputo: (011) 4896-8500 · Preguntar por Área de Operaciones o Dirección de Obras.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fuentes adicionales -->
+  <h2>Fuentes para encontrar más leads</h2>
+  <table class="src-table">
+    <thead>
+      <tr><th>Fuente</th><th>URL</th><th>Qué encontrar</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>CAMARCO</td><td><a href="https://camarco.org.ar">camarco.org.ar</a></td><td>Buscador de socios activos</td></tr>
+      <tr><td>Portal GCBA</td><td><a href="https://buenosaires.gob.ar">buenosaires.gob.ar</a></td><td>Obras públicas en licitación</td></tr>
+      <tr><td>constructoras.com.ar</td><td><a href="https://constructoras.com.ar">constructoras.com.ar</a></td><td>Directorio de empresas</td></tr>
+      <tr><td>LinkedIn</td><td>linkedin.com</td><td>Filtrar "Construcción + CABA"</td></tr>
+      <tr><td>ARQ Clarín</td><td>clarín.com/arq</td><td>Ranking anual de constructoras</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Checklist próximos pasos -->
+  <h2>Próximos pasos — Checklist</h2>
+  <ul class="checklist">
+    <li>Preparar video de presentación de 60-90 segundos (demo de seguimiento de obra con drones)</li>
+    <li>Crear one-pager PDF con casos de uso y precios de referencia</li>
+    <li>Conectar en LinkedIn con Director de Obra de CRIBA y Caputo S.A. esta semana</li>
+    <li>Enviar email frío a recepcion@ccys.com (Caputo S.A.)</li>
+    <li>Llamar a CRIBA: (011) 3984-7200 preguntando por el área de Operaciones/Obras</li>
+    <li>Recorrer Puerto Madero y Palermo para identificar obras en curso y contacto directo</li>
+  </ul>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <span>◈ desdedrone.ar</span>
+    <span>Research de Leads CABA · Abril 2026 · Confidencial</span>
+  </div>
+
+</div>
+</body>
+</html>

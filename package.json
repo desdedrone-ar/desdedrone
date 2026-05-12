@@ -1,38 +1,14 @@
 {
-  "name": "desdedrone",
+  "name": "desdedrone-monorepo",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "version": "1.0.0",
+  "description": "Landing pública (HTML/CSS vanilla en /landing) + Plataforma de análisis (Vite + React en /app). Build combinado: dist/ (landing) + dist/app/ (SPA).",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development vite",
-    "build": "cross-env NODE_ENV=production vite build",
-    "lint": "eslint .",
-    "preview": "cross-env NODE_ENV=production vite preview"
-  },
-  "dependencies": {
-    "leaflet": "^1.9.4",
-    "potree-core": "^2.0.15",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "three": "^0.184.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.4",
-    "@tailwindcss/vite": "^4.2.2",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
-    "cross-env": "^10.1.0",
-    "eslint": "^9.39.4",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.4.0",
-    "tailwindcss": "^4.2.2",
-    "vite": "^8.0.8"
-  },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "build": "node build.js",
+    "dev:landing": "npx serve landing -l 3000",
+    "dev:app": "cd app && npm run dev",
+    "install:app": "cd app && npm install",
+    "preview": "npx serve dist -l 3000"
+  }
 }

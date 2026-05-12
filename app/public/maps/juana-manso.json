@@ -1,0 +1,15 @@
+{
+  "id": "juana-manso",
+  "name": "Juana Manso — Puerto Madero",
+  "date": "2026-02-27",
+  "projection": "UTM 21S / WGS84",
+  "ortho": "/maps/orthophoto.webp",
+  "bounds": {
+    "sw": [-34.60959453, -58.36351658],
+    "ne": [-34.60647477, -58.36036051]
+  },
+  "center": [-34.60803465, -58.36193854],
+  "elevation": { "min": -15.327, "max": 21.994 },
+  "points": 12365109,
+  "gsd_cm": 5
+}
