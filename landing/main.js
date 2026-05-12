@@ -151,6 +151,36 @@ function initCounters() {
   els.forEach(el => obs.observe(el));
 }
 
+// ─── Comparador DSM / NDVI ───────────────────────────────────
+function initCompare() {
+  const el = document.getElementById("ddCompare");
+  if (!el) return;
+  let dragging = false;
+  const set = (clientX) => {
+    const r = el.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
+    el.style.setProperty("--pos", pct + "%");
+  };
+  const onDown = (e) => {
+    dragging = true;
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    set(x);
+  };
+  const onMove = (e) => {
+    if (!dragging) return;
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    set(x);
+  };
+  const onUp = () => { dragging = false; };
+  el.addEventListener("mousedown", onDown);
+  el.addEventListener("touchstart", onDown, { passive: true });
+  window.addEventListener("mousemove", onMove);
+  window.addEventListener("touchmove", onMove, { passive: true });
+  window.addEventListener("mouseup", onUp);
+  window.addEventListener("touchend", onUp);
+  el.addEventListener("click", (e) => set(e.clientX));
+}
+
 // ─── Bootstrap ───────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
@@ -160,4 +190,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initSmoothScroll();
   initVideoControls();
   initCounters();
+  initCompare();
 });

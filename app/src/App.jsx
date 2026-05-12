@@ -246,6 +246,73 @@ const terrainH = (nx, ny) =>
   Math.sin(nx * 5.1 + 1.2) * Math.cos(ny * 4.9 + 0.8) * 0.15 +
   Math.sin(nx * 9.3 + 0.7) * Math.cos(ny * 8.7 + 1.4) * 0.1;
 
+function ImageCompareSlider({ leftSrc, rightSrc, leftLabel, rightLabel }) {
+  const [pos, setPos] = useState(50);
+  const containerRef = useRef(null);
+  const draggingRef = useRef(false);
+
+  const move = (clientX) => {
+    const el = containerRef.current; if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    setPos(Math.max(0, Math.min(100, x)));
+  };
+
+  useEffect(() => {
+    const onMove = (e) => { if (draggingRef.current) move(e.clientX); };
+    const onTouch = (e) => { if (draggingRef.current && e.touches[0]) move(e.touches[0].clientX); };
+    const onUp = () => { draggingRef.current = false; };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchmove", onTouch, { passive: true });
+    window.addEventListener("touchend", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchmove", onTouch);
+      window.removeEventListener("touchend", onUp);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full h-full overflow-hidden select-none"
+      style={{ background: "#0a0d14", cursor: "ew-resize" }}
+      onClick={(e) => move(e.clientX)}
+    >
+      <img src={leftSrc} alt={leftLabel} draggable={false}
+        className="absolute inset-0 w-full h-full object-contain pointer-events-none" />
+      <img src={rightSrc} alt={rightLabel} draggable={false}
+        className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+        style={{ clipPath: `inset(0 0 0 ${pos}%)` }} />
+
+      <div className="absolute top-3 left-3 px-2.5 py-1 rounded text-xs font-mono tracking-wide"
+        style={{ background: "rgba(0,0,0,0.7)", color: "#c4a478", border: "1px solid rgba(196,164,120,0.2)", backdropFilter: "blur(8px)" }}>
+        {leftLabel}
+      </div>
+      <div className="absolute top-3 right-3 px-2.5 py-1 rounded text-xs font-mono tracking-wide"
+        style={{ background: "rgba(0,0,0,0.7)", color: "#c4a478", border: "1px solid rgba(196,164,120,0.2)", backdropFilter: "blur(8px)" }}>
+        {rightLabel}
+      </div>
+
+      <div className="absolute top-0 bottom-0 pointer-events-none"
+        style={{ left: `${pos}%`, transform: "translateX(-50%)", width: 2, background: "rgba(255,255,255,0.9)", boxShadow: "0 0 10px rgba(0,0,0,0.6)" }}>
+        <div
+          className="absolute top-1/2 left-1/2 w-11 h-11 rounded-full flex items-center justify-center pointer-events-auto"
+          style={{ transform: "translate(-50%,-50%)", background: "rgba(255,255,255,0.96)", boxShadow: "0 4px 16px rgba(0,0,0,0.5)", cursor: "ew-resize" }}
+          onMouseDown={(e) => { e.stopPropagation(); draggingRef.current = true; }}
+          onTouchStart={(e) => { e.stopPropagation(); draggingRef.current = true; }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0a0d14" strokeWidth="2.2" className="w-5 h-5">
+            <path d="M9 6l-4 6 4 6M15 6l4 6-4 6" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function OrthoViewer() {
   const canvasRef = useRef(null);
   const [layer, setLayer] = useState("real");
@@ -397,6 +464,8 @@ function OrthoViewer() {
     { id: "ortho",      label: "Ortofoto",      icon: <Ic.Map /> },
     { id: "pointcloud", label: "Nube de Puntos", icon: <Ic.Crosshair /> },
     { id: "dsm",        label: "Elevación DSM",  icon: <Ic.Layers /> },
+    { id: "ndvi",       label: "NDVI",           icon: <Ic.Scan /> },
+    { id: "compare",    label: "Comparativa",    icon: <Ic.Eye /> },
     { id: "nivelacion", label: "Mapa de Nivel",  icon: <Ic.Target /> },
   ];
 
@@ -405,6 +474,8 @@ function OrthoViewer() {
     ortho:      [["Resolución","1.8 cm/px"],["Fecha vuelo","2026-03-15"],["Área","243 ha"],["GSD","1.82 cm"],["Altitud","65 m AGL"],["Cámara","DJI Air 2S"],["Archivo","lote14_ortho.tif"],["Tamaño","2.4 GB"]],
     pointcloud: [["Puntos","48.2 M"],["Densidad","12.4 pts/m²"],["Formato","LAS 1.4"],["Clases","Suelo · Veg. · Edificios"],["Archivo","lote14_cloud.laz"],["Tamaño","890 MB"]],
     dsm:        [["Resolución","5 cm/px"],["Elev. mín","118.3 m"],["Elev. máx","203.7 m"],["Diferencia","85.4 m"],["Fecha","2026-03-15"],["Archivo","lote14_dsm.tif"],["Tamaño","320 MB"]],
+    ndvi:       [["Índice","NDVI"],["Rango","-1 a +1"],["Vigor medio","0.68"],["Cobertura sana","82%"],["Estrés hídrico","11%"],["Fecha","2026-03-15"],["Archivo","lote14_ndvi.tif"],["Tamaño","180 MB"]],
+    compare:    [["Modo","Slider A/B"],["Capa A","DSM (elevación)"],["Capa B","NDVI (vegetación)"],["Uso","Correlación relieve/vigor"],["Fecha vuelo","2026-03-15"],["Tip","Arrastrá el círculo o hacé click"]],
     nivelacion: [["Curvas","12 niveles"],["Equidistancia","1 m"],["Elev. mín","118 m"],["Elev. máx","204 m"],["Área cubierta","243 ha"],["Archivo","lote14_curvas.shp"],["Tamaño","4.2 MB"]],
   };
 
@@ -466,11 +537,23 @@ function OrthoViewer() {
 
       {/* Canvas area + metadata panel */}
       <div className="flex flex-1 overflow-hidden">
-        <div className="flex-1 relative overflow-hidden cursor-crosshair" onClick={layer === "real" ? undefined : handleClick}>
+        <div className="flex-1 relative overflow-hidden cursor-crosshair" onClick={layer === "real" || layer === "compare" ? undefined : handleClick}>
           {layer === "real" ? (
             <LeafletMap />
           ) : layer === "pointcloud" ? (
             <PointCloudViewer key={activeCloudId} cloudId={activeCloudId} />
+          ) : layer === "compare" ? (
+            <ImageCompareSlider
+              leftSrc={`${import.meta.env.BASE_URL}maps/dsm.png`}
+              rightSrc={`${import.meta.env.BASE_URL}maps/ndvi.png`}
+              leftLabel="DSM · Elevación"
+              rightLabel="NDVI · Vegetación"
+            />
+          ) : layer === "dsm" || layer === "ndvi" ? (
+            <div className="w-full h-full flex items-center justify-center" style={{ transform: `scale(${zoom})`, transformOrigin: "center" }}>
+              <img src={`${import.meta.env.BASE_URL}maps/${layer === "dsm" ? "dsm" : "ndvi"}.png`} alt={layer} draggable={false}
+                className="max-w-full max-h-full object-contain" />
+            </div>
           ) : (
             <canvas ref={canvasRef} className="w-full h-full" style={{ transform: `scale(${zoom})`, transformOrigin: "center" }} />
           )}
@@ -487,10 +570,24 @@ function OrthoViewer() {
             </div>
           )}
           {/* Color scale for elevation layers */}
-          {(layer === "dsm" || layer === "nivelacion") && (
+          {layer === "dsm" && (
+            <div className="absolute bottom-3 right-3 flex flex-col items-center gap-1 p-2 rounded-lg" style={{ background: "rgba(0,0,0,0.82)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(12px)" }}>
+              <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>+ alto</span>
+              <div style={{ width: 10, height: 72, background: "linear-gradient(to bottom,#ffe066,#5ad1b0,#5a4fcf,#2e1e6b)", borderRadius: 4 }} />
+              <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>+ bajo</span>
+            </div>
+          )}
+          {layer === "ndvi" && (
+            <div className="absolute bottom-3 right-3 flex flex-col items-center gap-1 p-2 rounded-lg" style={{ background: "rgba(0,0,0,0.82)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(12px)" }}>
+              <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>sano</span>
+              <div style={{ width: 10, height: 72, background: "linear-gradient(to bottom,#1f7a3a,#9fd17a,#f6e07b,#d76a3a)", borderRadius: 4 }} />
+              <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>estrés</span>
+            </div>
+          )}
+          {layer === "nivelacion" && (
             <div className="absolute bottom-3 right-3 flex flex-col items-center gap-1 p-2 rounded-lg" style={{ background: "rgba(0,0,0,0.82)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(12px)" }}>
               <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>204m</span>
-              <div style={{ width: 10, height: 72, background: layer === "dsm" ? "linear-gradient(to bottom,#ff0000,#ffff00,#00ff00,#00ffff,#0000ff)" : "linear-gradient(to bottom,#e8b870,#c87844,#8aba6a,#3e7028)", borderRadius: 4 }} />
+              <div style={{ width: 10, height: 72, background: "linear-gradient(to bottom,#e8b870,#c87844,#8aba6a,#3e7028)", borderRadius: 4 }} />
               <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>118m</span>
             </div>
           )}
