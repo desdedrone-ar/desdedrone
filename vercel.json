@@ -1,17 +1,8 @@
 {
   "buildCommand": "node build.js",
   "outputDirectory": "dist",
-  "cleanUrls": true,
   "rewrites": [
     { "source": "/app", "destination": "/app/index.html" },
-    { "source": "/app/login", "destination": "/app/index.html" },
-    { "source": "/app/dashboard", "destination": "/app/index.html" },
-    { "source": "/app/casos", "destination": "/app/index.html" },
-    { "source": "/app/presupuesto", "destination": "/app/index.html" },
-    { "source": "/app/servicios", "destination": "/app/index.html" },
-    { "source": "/app/ortho", "destination": "/app/index.html" },
-    { "source": "/app/video", "destination": "/app/index.html" },
-    { "source": "/app/invoices", "destination": "/app/index.html" },
-    { "source": "/app/stack", "destination": "/app/index.html" }
+    { "source": "/app/:path*", "destination": "/app/index.html" }
   ]
 }
