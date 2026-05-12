@@ -33,4 +33,14 @@ execSync("npm run build", { cwd: APP, stdio: "inherit" });
 console.log("▸ Copiando app/dist → dist/app/…");
 if (existsSync(APP_DIST)) cpSync(APP_DIST, DIST_APP, { recursive: true });
 
+// Videos viven solo en /landing/video (single source of truth).
+// El build los copia también a /dist/app/video para que la React app
+// los sirva en /app/video/* sin duplicarlos en el repo.
+const LANDING_VIDEO = resolve(LANDING, "video");
+const DIST_APP_VIDEO = resolve(DIST_APP, "video");
+if (existsSync(LANDING_VIDEO)) {
+  console.log("▸ Copiando landing/video → dist/app/video/…");
+  cpSync(LANDING_VIDEO, DIST_APP_VIDEO, { recursive: true });
+}
+
 console.log("✓ Build combinado listo: dist/");

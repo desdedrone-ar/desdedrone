@@ -30,6 +30,7 @@ dist-ssr
 # Point cloud assets (servidas desde R2 en prod, copia local en dev)
 app/public/pointclouds/
 
-# Video assets pesados (servidos desde CDN en prod, copia local en dev)
+# Point cloud assets siguen en R2 (CDN), no se commitean
+# Los videos viven en landing/video/ (single source) y se commitean.
+# app/public/video/ es opcional para dev del app — gitignorado.
 app/public/video/
-landing/video/
