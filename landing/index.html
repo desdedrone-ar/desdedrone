@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DESDEDRONE.AR — Servicios con drones · Argentina</title>
+    <meta name="description" content="Visión aérea para decisiones estratégicas. Vuelos FPV y cine aéreo, seguimiento de obra y fotogrametría con ortomosaicos georreferenciados." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dd3">
+
+    <!-- ─── NAV ─── -->
+    <nav class="dd3-nav" id="ddNav">
+      <a class="dd3-logo" href="/" aria-label="Inicio">
+        <span class="dd3-logo-diamond" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 3L21 12L12 21L3 12Z"/></svg>
+        </span>
+        <span class="dd3-logo-name"><span>DESDEDRONE</span><span class="accent">.AR</span></span>
+      </a>
+
+      <div class="dd3-nav-links">
+        <a href="#servicios">Servicios</a>
+        <a href="/app/casos">Casos de Uso</a>
+        <a href="/app/presupuesto">Presupuesto</a>
+        <a href="/app/login">Plataforma</a>
+        <a href="#contacto">Contacto</a>
+      </div>
+
+      <div class="dd3-nav-right">
+        <button class="dd3-theme-btn" id="ddThemeBtn" aria-label="Cambiar tema">
+          <!-- icono inyectado por JS -->
+        </button>
+        <a class="dd3-portal-btn" href="/app/login">Portal Clientes</a>
+        <button class="dd3-burger" id="ddBurger" aria-label="Menú" aria-expanded="false">
+          <!-- icono inyectado por JS -->
+        </button>
+      </div>
+
+      <div class="dd3-mobile-menu" id="ddMobileMenu">
+        <a href="#servicios">Servicios <span class="arrow">→</span></a>
+        <a href="/app/casos">Casos de Uso <span class="arrow">→</span></a>
+        <a href="/app/presupuesto">Presupuesto <span class="arrow">→</span></a>
+        <a href="/app/login">Plataforma <span class="arrow">→</span></a>
+        <a href="#contacto">Contacto <span class="arrow">→</span></a>
+        <a class="dd3-portal-btn" href="/app/login">Portal Clientes</a>
+      </div>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section class="dd3-hero">
+      <video class="dd3-hero-video" src="video/hero.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+      <div class="dd3-hero-scrim"></div>
+
+      <div class="dd3-hero-content">
+        <div class="dd3-eyebrow-hero dd3-fadeup">
+          <span class="dashes-d">─── </span>SERVICIOS CON DRONES · ARGENTINA<span class="dashes-d"> ───</span>
+        </div>
+        <h1 class="dd3-fadeup d1">
+          Visión aérea para
+          <span>decisiones estratégicas</span>
+        </h1>
+        <div class="dd3-hero-ctas dd3-fadeup d3">
+          <a class="dd3-cta" href="/app/presupuesto">Solicitar presupuesto</a>
+          <a class="dd3-cta-secondary" href="#servicios">Ver servicios ↓</a>
+        </div>
+      </div>
+
+      <div class="dd3-scroll-hint" id="ddScrollHint">SCROLL</div>
+    </section>
+
+    <!-- ─── SERVICES INTRO + GRID ─── -->
+    <section id="servicios" class="dd3-services">
+      <div class="dd3-services-intro">
+        <div class="dd3-eyebrow"><span class="dd3-foto-dot"></span>Nuestros servicios</div>
+        <p>Vuelos estabilizados y FPV para Real Estate. Seguimiento de obra. Fotogrametría con ortomosaicos georreferenciados y nubes de puntos.</p>
+      </div>
+
+      <div class="dd3-services-grid">
+        <a href="#cine-aereo" class="dd3-service-card">
+          <div class="dd3-service-head">
+            <span class="dd3-service-num">01</span>
+            <div class="dd3-service-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" width="20" height="20">
+                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </div>
+          </div>
+          <div class="dd3-service-title">Vuelos FPV y Cine Aéreo</div>
+          <p class="dd3-service-desc">Producción audiovisual cinematográfica con drones FPV y aéreos 4K/60fps estabilizados.</p>
+          <div class="dd3-service-tags">
+            <span class="dd3-service-tag">Real Estate</span>
+            <span class="dd3-service-tag">Marketing</span>
+            <span class="dd3-service-tag">Arquitectura</span>
+          </div>
+          <div class="dd3-service-link">Ver más <span>→</span></div>
+        </a>
+
+        <a href="#seguimiento-obra" class="dd3-service-card">
+          <div class="dd3-service-head">
+            <span class="dd3-service-num">02</span>
+            <div class="dd3-service-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" width="20" height="20">
+                <rect x="4" y="2" width="16" height="20" rx="1"/>
+                <path d="M9 22V12h6v10M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01"/>
+              </svg>
+            </div>
+          </div>
+          <div class="dd3-service-title">Seguimiento de Obra</div>
+          <p class="dd3-service-desc">Vuelos periódicos para registrar el avance con evidencia visual georreferenciada.</p>
+          <div class="dd3-service-tags">
+            <span class="dd3-service-tag">Construcción</span>
+            <span class="dd3-service-tag">Arquitectura</span>
+            <span class="dd3-service-tag">Ingeniería</span>
+          </div>
+          <div class="dd3-service-link">Ver más <span>→</span></div>
+        </a>
+
+        <a href="#fotogrametria" class="dd3-service-card">
+          <div class="dd3-service-head">
+            <span class="dd3-service-num">03</span>
+            <div class="dd3-service-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" width="20" height="20">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+          </div>
+          <div class="dd3-service-title">Fotogrametría</div>
+          <p class="dd3-service-desc">Ortomosaicos GeoTIFF, nubes de puntos densas y modelos de superficie georreferenciados.</p>
+          <div class="dd3-service-tags">
+            <span class="dd3-service-tag">Agro</span>
+            <span class="dd3-service-tag">Minería</span>
+            <span class="dd3-service-tag">Catastro</span>
+          </div>
+          <div class="dd3-service-link">Ver más <span>→</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ─── SECCIÓN 01 — FPV / Cine Aéreo ─── -->
+    <section id="cine-aereo" class="dd3-tile-section" style="--accent:#b89878;">
+      <div class="dd3-tile-wrap">
+        <header class="dd3-tile-meta reveal">
+          <span class="dd3-tile-num">01</span>
+          <span class="dd3-tile-rule" aria-hidden="true"></span>
+          <span class="dd3-tile-label">FPV · CINE AÉREO</span>
+        </header>
+
+        <div class="dd3-tile-video reveal" data-delay="120">
+          <video src="video/fpv.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+          <div class="dd3-tile-scrim"></div>
+          <div class="dd3-tile-corner top-left" aria-hidden="true">
+            <span class="dd3-corner-num">01</span>
+          </div>
+          <button type="button" class="dd3-tile-play" data-playing="true" aria-label="Pausar video" title="Pausar"></button>
+          <div class="dd3-tile-overlay">
+            <h2 class="dd3-tile-title">
+              <span class="light">Vuelos FPV para</span>
+              <span class="strong">Real Estate de alto impacto</span>
+            </h2>
+            <div class="dd3-tile-sector">Real Estate · Marketing · Arquitectura</div>
+          </div>
+        </div>
+
+        <div class="dd3-tile-detail">
+          <p class="dd3-tile-desc dd3-desktop reveal">Producción audiovisual cinematográfica con drones FPV y aéreos 4K/60fps estabilizados. Recorridos inmersivos, color grading D-Log y entregables listos para sala de ventas, redes y campañas digitales.</p>
+          <p class="dd3-tile-desc dd3-mobile reveal">Cine aéreo 4K/60fps con FPV. Listos para sala de ventas y redes.</p>
+          <ul class="dd3-tile-list reveal" data-delay="120">
+            <li>Video FPV + aéreo 4K / 60fps</li>
+            <li>Cortes 60&quot; para redes (9:16 y 16:9)</li>
+            <li>Fotos aéreas de alta resolución</li>
+            <li>Color grading D-Log con LUT custom</li>
+          </ul>
+          <div class="dd3-tile-metrics-wrap reveal" data-delay="240">
+            <div class="dd3-tile-metrics">
+              <div class="dd3-metric"><div class="dd3-metric-val">4K</div><div class="dd3-metric-lbl">60fps · D-Log</div></div>
+              <div class="dd3-metric"><div class="dd3-metric-val">2–3</div><div class="dd3-metric-lbl">días producción</div></div>
+              <div class="dd3-metric"><div class="dd3-metric-val">4</div><div class="dd3-metric-lbl">formatos entregados</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECCIÓN 02 — Seguimiento de Obra ─── -->
+    <section id="seguimiento-obra" class="dd3-tile-section" style="--accent:#8fb4c4;">
+      <div class="dd3-tile-wrap">
+        <header class="dd3-tile-meta reveal">
+          <span class="dd3-tile-num">02</span>
+          <span class="dd3-tile-rule" aria-hidden="true"></span>
+          <span class="dd3-tile-label">SEGUIMIENTO DE OBRA</span>
+        </header>
+
+        <div class="dd3-tile-video reveal" data-delay="120">
+          <video src="video/seguimiento.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+          <div class="dd3-tile-scrim"></div>
+          <div class="dd3-tile-corner top-left" aria-hidden="true">
+            <span class="dd3-corner-num">02</span>
+          </div>
+          <button type="button" class="dd3-tile-play" data-playing="true" aria-label="Pausar video" title="Pausar"></button>
+          <div class="dd3-tile-overlay">
+            <h2 class="dd3-tile-title">
+              <span class="light">Documentación aérea</span>
+              <span class="strong">fechada de tu obra</span>
+            </h2>
+            <div class="dd3-tile-sector">Construcción · Arquitectura · Ingeniería civil</div>
+          </div>
+        </div>
+
+        <div class="dd3-tile-detail">
+          <p class="dd3-tile-desc dd3-desktop reveal">Vuelos periódicos para registrar el avance de obra con evidencia visual georreferenciada y comparable en el tiempo. Reportes PDF entregables a dirección, cliente y subcontratistas.</p>
+          <p class="dd3-tile-desc dd3-mobile reveal">Avance georreferenciado y comparable. Reportes PDF para cada etapa.</p>
+          <ul class="dd3-tile-list reveal" data-delay="120">
+            <li>Vuelo periódico (mensual / quincenal)</li>
+            <li>Reporte PDF con foto-grilla fechada</li>
+            <li>Ortomosaico de referencia por vuelo</li>
+            <li>Comparación temporal entre vuelos</li>
+          </ul>
+          <div class="dd3-tile-metrics-wrap reveal" data-delay="240">
+            <div class="dd3-tile-metrics">
+              <div class="dd3-metric"><div class="dd3-metric-val">18</div><div class="dd3-metric-lbl">vuelos / obra</div></div>
+              <div class="dd3-metric"><div class="dd3-metric-val">4.200 m²</div><div class="dd3-metric-lbl">superficie</div></div>
+              <div class="dd3-metric"><div class="dd3-metric-val">±2 cm</div><div class="dd3-metric-lbl">precisión</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECCIÓN 03 — Fotogrametría (imagen estática) ─── -->
+    <section id="fotogrametria" class="dd3-foto">
+      <div class="dd3-foto-wrap">
+        <div class="dd3-map-card reveal">
+          <img src="img/orthophoto-preview.webp" alt="Ortomosaico aéreo georreferenciado del relevamiento Juana Manso" loading="lazy" />
+          <div class="dd3-map-badge" aria-hidden="true">
+            <span class="dot"></span>
+            <span>ORTOMOSAICO · UTM 21S</span>
+          </div>
+        </div>
+
+        <div class="dd3-foto-content reveal" data-delay="120">
+          <div class="dd3-foto-eyebrow"><span class="dd3-foto-dot"></span>FOTOGRAMETRÍA</div>
+          <h2 class="dd3-foto-title">
+            <span class="light">Ortomosaicos y</span>
+            <span class="strong">modelos 3D del terreno</span>
+          </h2>
+          <div class="dd3-foto-tags">Agro · Minería · Ingeniería civil · Catastro</div>
+          <p class="dd3-foto-p">Relevamientos aéreos completos. Generamos ortomosaicos GeoTIFF, nubes de puntos densas (LAS 1.4), modelos de superficie (DSM/MDT) y curvas de nivel. Todo georreferenciado con GCPs y proyección UTM.</p>
+          <ul class="dd3-foto-list">
+            <li>Ortomosaico GeoTIFF de alta resolución</li>
+            <li>Nube de puntos LAS 1.4 clasificada</li>
+            <li>DSM y MDT georreferenciados</li>
+            <li>Curvas de nivel con equidistancia configurable</li>
+          </ul>
+          <div class="dd3-foto-metrics">
+            <div class="dd3-foto-metric">
+              <div class="val"><span class="counter" data-end="243" data-suffix=" ha">0</span></div>
+              <div class="lbl">área por vuelo</div>
+            </div>
+            <div class="dd3-foto-metric">
+              <div class="val">±2 cm</div>
+              <div class="lbl">precisión GSD</div>
+            </div>
+            <div class="dd3-foto-metric">
+              <div class="val"><span class="counter" data-end="48" data-suffix=" M">0</span></div>
+              <div class="lbl">puntos en nube</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── FOOTER + CONTACTO ─── -->
+    <footer id="contacto" class="dd3-footer">
+      <div class="dd3-eyebrow"><span class="dd3-foto-dot"></span>CONTACTO</div>
+      <h2>Hablemos de tu <span>proyecto</span></h2>
+      <p class="dd3-footer-intro">Contanos qué necesitás y te respondemos con un presupuesto detallado en 24 horas hábiles.</p>
+
+      <form class="dd3-form" id="ddContactForm" action="/app/presupuesto" method="GET">
+        <div class="dd3-form-row">
+          <input type="text" name="nombre" placeholder="Nombre y empresa" />
+          <input type="text" name="telefono" placeholder="Teléfono / WhatsApp" />
+        </div>
+        <input type="email" name="email" placeholder="Email" style="margin-bottom: 1.1rem;" />
+        <textarea name="mensaje" placeholder="Describí tu proyecto: ubicación, tipo de relevamiento, urgencia…"></textarea>
+        <button type="submit" class="dd3-submit">Enviar consulta</button>
+      </form>
+
+      <div class="dd3-footer-bottom">
+        <a class="dd3-logo" href="/" aria-label="Inicio">
+          <span class="dd3-logo-diamond" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 3L21 12L12 21L3 12Z"/></svg>
+          </span>
+          <span class="dd3-logo-name"><span>DESDEDRONE</span><span class="accent">.AR</span></span>
+        </a>
+        <div class="dd3-footer-copy">© 2026 · Buenos Aires, Argentina</div>
+        <div class="dd3-footer-links">
+          <a href="https://instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
+          <a href="https://linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a href="https://wa.me/" target="_blank" rel="noreferrer">WhatsApp</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="main.js" defer></script>
+  </body>
+</html>

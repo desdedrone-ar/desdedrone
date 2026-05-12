@@ -28,7 +28,8 @@ dist-ssr
 *.zip
 
 # Point cloud assets (servidas desde R2 en prod, copia local en dev)
-public/pointclouds/
+app/public/pointclouds/
 
 # Video assets pesados (servidos desde CDN en prod, copia local en dev)
-public/video/
+app/public/video/
+landing/video/

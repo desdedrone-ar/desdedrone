@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_POINTCLOUD_BASE_URL || "/pointclouds/";
+const BASE = import.meta.env.VITE_POINTCLOUD_BASE_URL || `${import.meta.env.BASE_URL}pointclouds/`;
 
 export const CLOUDS = [
   {

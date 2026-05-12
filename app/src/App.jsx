@@ -3,7 +3,6 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import PointCloudViewer from "./PointCloudViewer.jsx";
 import { CLOUDS } from "./clouds";
-import LandingV3 from "./LandingV3.jsx";
 
 // ═══════════════════════════════════════════════════════════════════════
 // DATA
@@ -154,7 +153,7 @@ export function Counter({ end, suffix = "", prefix = "" }) {
 // ═══════════════════════════════════════════════════════════════════════
 // LEAFLET MAP — real georeferenced orthophoto + base map
 // ═══════════════════════════════════════════════════════════════════════
-export function LeafletMap({ metaUrl = "/maps/juana-manso.json" }) {
+export function LeafletMap({ metaUrl = `${import.meta.env.BASE_URL}maps/juana-manso.json` }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const [meta, setMeta] = useState(null);
@@ -180,7 +179,7 @@ export function LeafletMap({ metaUrl = "/maps/juana-manso.json" }) {
       const bounds = L.latLngBounds(m.bounds.sw, m.bounds.ne);
       overlayRef.current = L.imageOverlay(m.ortho, bounds, { opacity: 0.9, interactive: true }).addTo(map);
 
-      fetch("/maps/bounds.geojson").then(r => r.json()).then(gj => {
+      fetch(`${import.meta.env.BASE_URL}maps/bounds.geojson`).then(r => r.json()).then(gj => {
         if (cancelled || !mapRef.current) return;
         L.geoJSON(gj, { style: { color: "#c4a478", weight: 2, fill: false, dashArray: "4 4" } }).addTo(mapRef.current);
       }).catch(() => {});
@@ -201,7 +200,7 @@ export function LeafletMap({ metaUrl = "/maps/juana-manso.json" }) {
     const map = mapRef.current;
     if (!map) return;
     if (showPhotos && !photosLayerRef.current) {
-      fetch("/maps/shots.geojson").then(r => r.json()).then(gj => {
+      fetch(`${import.meta.env.BASE_URL}maps/shots.geojson`).then(r => r.json()).then(gj => {
         if (!mapRef.current) return;
         photosLayerRef.current = L.geoJSON(gj, {
           pointToLayer: (_, latlng) => L.circleMarker(latlng, {
@@ -2007,7 +2006,7 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
         <section className="relative min-h-screen flex items-center overflow-hidden">
           <video
             className="absolute top-[72px] left-0 right-0 w-full object-cover object-top lg:object-contain"
-            src="/video/hero.mp4"
+            src={`${import.meta.env.BASE_URL}video/hero.mp4`}
             autoPlay
             muted
             loop
@@ -2246,17 +2245,28 @@ function Landing({ onNavigate, darkMode, setDarkMode }) {
 // MAIN APP
 // ═══════════════════════════════════════════════════════════════════════
 export default function App() {
-  const [view, setView] = useState("landing");
+  // Initial view derived from URL hash so external links from the static landing
+  // (/app/login, /app/presupuesto, /app/casos, /app/dashboard, /app/servicios)
+  // open the right view. Default: login.
+  const initialView = (() => {
+    const path = (typeof window !== "undefined" ? window.location.pathname : "");
+    const slug = path.replace(/^\/app\/?/, "").replace(/\/$/, "");
+    const allowed = ["login","dashboard","ortho","video","invoices","casos","presupuesto","servicios","stack"];
+    return allowed.includes(slug) ? slug : "login";
+  })();
+
+  const [view, setView] = useState(initialView);
   const [proj, setProj] = useState(null);
   const [darkMode, setDarkMode] = useState(true);
 
-  if (view === "landing" || view === "landing-v3") return <LandingV3 onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}} darkMode={darkMode} setDarkMode={setDarkMode}/>;
-  if (view === "landing-v1") return <Landing onNavigate={v=>{if(v==="ortho")setProj(PROJECTS[0]);if(v==="video")setProj(PROJECTS[1]);setView(v);}} darkMode={darkMode} setDarkMode={setDarkMode}/>;
-  if (view === "login") return <Login onLogin={()=>setView("dashboard")} onBack={()=>setView("landing")}/>;
-  if (view === "stack") return <StackPage onBack={()=>setView("landing")}/>;
-  if (view === "casos") return <CasosDeUsoPage onBack={()=>setView("landing")} onContacto={()=>setView("presupuesto")}/>;
-  if (view === "presupuesto") return <PresupuestoPage onBack={()=>setView("landing")} onContacto={()=>setView("landing")}/>;
-  if (view === "servicios") return <ServiciosPage onBack={()=>setView("landing")} onPresupuesto={()=>setView("presupuesto")} dark={darkMode} onToggleTheme={()=>setDarkMode(d=>!d)}/>;
+  // "Volver" desde cualquier vista de la plataforma devuelve a la landing pública (estática).
+  const goHome = () => { window.location.href = "/"; };
+
+  if (view === "login") return <Login onLogin={()=>setView("dashboard")} onBack={goHome}/>;
+  if (view === "stack") return <StackPage onBack={goHome}/>;
+  if (view === "casos") return <CasosDeUsoPage onBack={goHome} onContacto={()=>setView("presupuesto")}/>;
+  if (view === "presupuesto") return <PresupuestoPage onBack={goHome} onContacto={goHome}/>;
+  if (view === "servicios") return <ServiciosPage onBack={goHome} onPresupuesto={()=>setView("presupuesto")} dark={darkMode} onToggleTheme={()=>setDarkMode(d=>!d)}/>;
 
   // Dashboard shell
   const accent = "#c4a478";
@@ -2275,7 +2285,7 @@ export default function App() {
           ))}
         </nav>
         <div className="p-2 border-t" style={{borderColor:"rgba(255,255,255,0.04)"}}>
-          <button onClick={()=>setView("landing")} className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs" style={{color:"rgba(255,255,255,0.2)"}}><Ic.Lock/><span className="hidden lg:inline">Cerrar sesión</span></button>
+          <button onClick={goHome} className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs" style={{color:"rgba(255,255,255,0.2)"}}><Ic.Lock/><span className="hidden lg:inline">Cerrar sesión</span></button>
         </div>
       </div>
 
