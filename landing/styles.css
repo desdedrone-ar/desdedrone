@@ -880,6 +880,26 @@ button { font-family: inherit; }
 .dd3-footer-links a:hover { color: var(--gold); }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────── */
+/* Compact desktop (1366×768, ~1440 laptops) — reduce escala global */
+@media (max-width: 1440px) {
+  html { font-size: 15px; }
+  .dd3-nav { padding: 1rem 2.2rem; }
+  .dd3-nav.scrolled { padding: .7rem 2.2rem; }
+  .dd3-services-grid { width: 88%; }
+  .dd3-tile-wrap { width: 92%; }
+  .dd3-foto-wrap { width: 88%; }
+  .dd3-map-card { height: 400px; }
+}
+@media (max-width: 1366px) {
+  html { font-size: 14.5px; }
+  .dd3-hero { padding-bottom: clamp(4.5rem, 11vh, 8rem); }
+  .dd3-services { padding: clamp(56px, 8vw, 96px) 1.5rem; }
+  .dd3-tile-section { padding: clamp(64px, 9vw, 110px) 1.5rem; }
+  .dd3-foto { padding: clamp(64px, 8vw, 96px) 1.5rem; }
+  .dd3-map-card { height: 380px; }
+  .dd3-service-card { padding: 2rem 1.6rem; }
+}
+
 @media (max-width: 1100px) {
   .dd3-services-grid { width: 92%; }
 }
