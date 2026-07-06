@@ -44,37 +44,49 @@
 }
 
 :root[data-theme="light"] {
-  --bg: #F4F1EA;
-  --bg-alt: #EFECE3;
-  --bg-deep: #E5E2D8;
-  --text-pri: #0E0E0C;
-  --text-med: #43403B;
-  --text-fade: #A6A39C;
-  --divider: rgba(20,18,15,0.10);
-  --card-bg: rgba(255,253,247,0.6);
-  --card-border: rgba(20,18,15,0.10);
-  --input-bg: rgba(20,18,15,0.03);
-  --input-bg-fc: rgba(20,18,15,0.06);
-  --hero-scrim: linear-gradient(135deg, rgba(48,48,46,0.55) 0%, rgba(48,48,46,0.30) 100%);
-  --nav-bg: rgba(244,241,234,0.78);
-  --nav-bg-scroll: rgba(244,241,234,0.95);
-  --tile-shadow: 0 24px 60px rgba(20,18,15,0.18);
+  --bg: #FFFFFF;
+  --bg-alt: #FAFAFA;
+  --bg-deep: #F4F4F5;
+  --text-pri: #0F172A;
+  --text-med: #475569;
+  --text-fade: #94A3B8;
+  --divider: rgba(15,23,42,0.08);
+  --card-bg: rgba(255,255,255,0.80);
+  --card-border: rgba(15,23,42,0.09);
+  --input-bg: rgba(15,23,42,0.03);
+  --input-bg-fc: rgba(15,23,42,0.06);
+  --hero-scrim: linear-gradient(135deg, rgba(15,23,42,0.55) 0%, rgba(15,23,42,0.30) 100%);
+  --nav-bg: rgba(255,255,255,0.82);
+  --nav-bg-scroll: rgba(255,255,255,0.96);
+  --tile-shadow: 0 24px 60px rgba(15,23,42,0.12);
 
-  --cta-bg: #111110;
+  --cta-bg: #1C3F73;
   --cta-text: #ffffff;
   --cta-hover-text: #ffffff;
-  --theme-btn-bg: rgba(17,17,16,0.04);
-  --theme-btn-color: #111110;
-  --theme-btn-border: rgba(17,17,16,0.18);
-  --burger-bg: rgba(17,17,16,0.04);
-  --grid-bg: rgba(255,255,255,0.5);
-  --card-hover-bg: rgba(196,164,120,0.07);
-  --tag-bg: rgba(17,17,16,0.04);
-  --eyebrow-hero-color: #7a5e3a;
-  --vtoggle-bg: rgba(244,241,234,0.85);
-  --vtoggle-color: #0E0E0C;
-  --vtoggle-border: rgba(20,18,15,0.18);
+  --theme-btn-bg: rgba(28,63,115,0.05);
+  --theme-btn-color: #1C3F73;
+  --theme-btn-border: rgba(28,63,115,0.18);
+  --burger-bg: rgba(15,23,42,0.05);
+  --grid-bg: rgba(255,255,255,0.60);
+  --card-hover-bg: rgba(28,63,115,0.04);
+  --tag-bg: rgba(15,23,42,0.04);
+  --eyebrow-hero-color: #1C3F73;
+  --vtoggle-bg: rgba(255,255,255,0.90);
+  --vtoggle-color: #0F172A;
+  --vtoggle-border: rgba(15,23,42,0.15);
 }
+
+/* ─── Tipografía modo claro (pesos más sólidos, como KOVAC) ── */
+[data-theme="light"] .dd3-services-intro p,
+[data-theme="light"] .dd3-service-desc,
+[data-theme="light"] .dd3-tile-desc,
+[data-theme="light"] .dd3-tile-list li,
+[data-theme="light"] .dd3-foto-p,
+[data-theme="light"] .dd3-footer-intro { font-weight: 400; }
+
+[data-theme="light"] .dd3-service-title { font-weight: 500; }
+
+[data-theme="light"] .dd3-hero h1 { font-weight: 200; }
 
 /* ─── Reset + base ──────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
